@@ -30,6 +30,14 @@ dependencies:
    verisoul_sdk: 0.1.0
 ```
 
+### 2. Update the Android minimum `minSdk` to **24** in `android/app/build.gradle`
+```groovy
+ defaultConfig {
+    minSdk = 24
+    //...
+}
+```
+
 If an exception occurs during the build stating that the `ai.verisoul:android` package cannot be downloaded, add the
    following Maven repository inside your `android/build.gradle` file:
 
