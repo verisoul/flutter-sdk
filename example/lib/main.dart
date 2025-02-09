@@ -23,11 +23,11 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  // Platfor
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
