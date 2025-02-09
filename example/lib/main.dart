@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:verisoul_sdk/verisoul.dart';
+import 'package:verisoul_sdk/verisoul_sdk.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
