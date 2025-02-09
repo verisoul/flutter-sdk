@@ -27,8 +27,7 @@ dependencies:
       sdk: flutter
    #  ...
    
-   verisoul_sdk:
-      git: https://github.com/verisoul/rn-sdk2.git.git
+   verisoul_sdk: 0.1.0
 ```
 
 If an exception occurs during the build stating that the `ai.verisoul:android` package cannot be downloaded, add the
