@@ -1,15 +1,12 @@
 PODS:
   - Flutter (1.0.0)
-  - integration_test (0.0.1):
-    - Flutter
   - verisoul_sdk (0.0.1):
     - Flutter
-    - VerisoulSDK (= 0.2.5)
-  - VerisoulSDK (0.2.5)
+    - VerisoulSDK (= 0.3.0)
+  - VerisoulSDK (0.3.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - verisoul_sdk (from `.symlinks/plugins/verisoul_sdk/ios`)
 
 SPEC REPOS:
@@ -19,16 +16,13 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  integration_test:
-    :path: ".symlinks/plugins/integration_test/ios"
   verisoul_sdk:
     :path: ".symlinks/plugins/verisoul_sdk/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
-  verisoul_sdk: 615153d245e369083d7c8e23287305c3246cb370
-  VerisoulSDK: 412bb5e252b7657e96aebe9d2b49652ddaae5239
+  verisoul_sdk: e59868e15733c0a7559c2329493ca94402cd8347
+  VerisoulSDK: fbeab6fe8914c3ccb9e927a4ee7dd3a7c07711fb
 
 PODFILE CHECKSUM: 1959d098c91d8a792531a723c4a9d7e9f6a01e38
 

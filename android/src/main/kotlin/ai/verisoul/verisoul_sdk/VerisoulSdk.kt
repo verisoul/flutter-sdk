@@ -2,9 +2,8 @@ package ai.verisoul.verisoul_sdk
 
 import ai.verisoul.sdk.Verisoul
 import ai.verisoul.sdk.VerisoulEnvironment
-import ai.verisoul.sdk.webview.VerisoulSessionCallback
+import ai.verisoul.sdk.helpers.webview.VerisoulSessionCallback
 import ai.verisoul.verisoul_sdk.generated.VerisoulApiHostApi
-import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
