@@ -1,3 +1,5 @@
+## 0.4.0
+* Add Web support
 ## 0.1.1
 * fix README file
 
