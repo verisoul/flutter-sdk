@@ -8,4 +8,6 @@ abstract class VerisoulApiHostApi {
 
   @async
   String getSessionId();
+  void reinitialize();
+  void setAccountData(Map<String, Object?> account);
 }

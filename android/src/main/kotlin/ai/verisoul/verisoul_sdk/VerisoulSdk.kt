@@ -76,4 +76,11 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
             }
         }
     }
+
+    override fun reinitialize() {
+
+    }
+
+    override fun setAccountData(account: Map<String, Any?>) {
+    }
 }

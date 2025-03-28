@@ -51,6 +51,27 @@ allprojects {
     }
  }
 ```
+### 3. Web support 
+Add the Verisoul script to your HTML:
+
+```html
+<script async src="https://js.verisoul.ai/{env}/bundle.js" verisoul-project-id="{project_id}"></script>
+```
+
+#### Replace the following parameters:
+
+* **{env}** : Use either `prod` or `sandbox`
+* **{project_id**} : Your project ID, which must match the environment
+
+
+#### Content Security Policy (CSP)
+If your application has a Content Security Policy, update it to include the following Verisoul domains:
+
+
+```html
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://js.verisoul.ai; worker-src 'self' blob: data:;connect-src 'self' https://*.verisoul.ai wss://*.verisoul.ai;">
+```
+
 
 ## Usage
 
@@ -80,29 +101,27 @@ final session = await VerisoulSdk.getSessionApi();
 ```
 
 ### 3. Provide Touch Events
-
+Wrap our App with  `VerisoulWrapper`
 ```dart
+runApp(VerisoulWrapper(child: const MyApp()));
+```
+### 4. Reinitialize (Web-only)
 
-GestureDetector(
-onPanDown: (event) {
-VerisoulSdk.touchEvent(
-x: event.localPosition.dx,
-y: event.localPosition.dy,
-action: MotionAction.down);
-},
-onPanEnd: (event) {
-VerisoulSdk.touchEvent(
-x: event.localPosition.dx,
-y: event.localPosition.dy,
-action: MotionAction.up);
-},
-onPanUpdate: (event){
-VerisoulSdk.touchEvent(
-x: event.localPosition.dx,
-y: event.localPosition.dy,
-action: MotionAction.move);
-},
-child: //... ),
+Calling `VerisoulSdk.reinitialize()` generates a new `session_id`, which ensures that if a user logs out of one account and into a different account, Verisoul will be able to delineate each account’s data cleanly.
+```dart
+await VerisoulSdk.reinitialize();
+```
+### 5.SetAccountData (Web-only)
+The `setAccountData()` function provides a simplified way to send user account information to Verisoul directly from the client side. While easy to integrate, this method has important limitations:
+
+* **Offline analysis only**: Data sent via account() is only visible in the Verisoul dashboard
+* **No real-time decisions**: Unlike the server-side API, this method doesn’t allow your application to receive and act on Verisoul’s risk scores in real-time 
+* **Limited use case**: Designed specifically for initial pilots and evaluation purposes
+```dart
+    await VerisoulSdk.setAccountData(
+      id: "example-id",
+      email: "example@example.com",
+      metadata: {"paid": true});
 ```
 
 ## Android

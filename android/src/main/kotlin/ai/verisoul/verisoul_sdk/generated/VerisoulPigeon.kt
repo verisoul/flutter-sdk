@@ -60,6 +60,8 @@ interface VerisoulApiHostApi {
   fun configure(enviromentVariable: Long, projectId: String)
   fun onTouchEvent(x: Double, y: Double, motionType: Long)
   fun getSessionId(callback: (Result<String>) -> Unit)
+  fun reinitialize()
+  fun setAccountData(account: Map<String, Any?>)
 
   companion object {
     /** The codec used by VerisoulApiHostApi. */
@@ -122,6 +124,40 @@ interface VerisoulApiHostApi {
                 reply.reply(wrapResult(data))
               }
             }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.verisoul_sdk.VerisoulApiHostApi.reinitialize$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.reinitialize()
+              listOf(null)
+            } catch (exception: Throwable) {
+              wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.verisoul_sdk.VerisoulApiHostApi.setAccountData$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val accountArg = args[0] as Map<String, Any?>
+            val wrapped: List<Any?> = try {
+              api.setAccountData(accountArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              wrapError(exception)
+            }
+            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)

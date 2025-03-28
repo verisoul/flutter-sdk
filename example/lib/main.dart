@@ -1,11 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:verisoul_sdk/verisoul_sdk.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   VerisoulSdk.configure(
-      projectId: "Project ID ", environment: VerisoulEnvironment.prod);
-  runApp(const MyApp());
+      projectId: "Project ID", environment: VerisoulEnvironment.prod);
+  runApp(VerisoulWrapper(child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -23,7 +24,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,27 +32,9 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: GestureDetector(
-            onPanDown: (event) {
-              VerisoulSdk.touchEvent(
-                  x: event.localPosition.dx,
-                  y: event.localPosition.dy,
-                  action: MotionAction.down);
-            },
-            onPanEnd: (event) {
-              VerisoulSdk.touchEvent(
-                  x: event.localPosition.dx,
-                  y: event.localPosition.dy,
-                  action: MotionAction.up);
-            },
-            onPanUpdate: (event) {
-              VerisoulSdk.touchEvent(
-                  x: event.localPosition.dx,
-                  y: event.localPosition.dy,
-                  action: MotionAction.move);
-            },
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,7 +54,7 @@ class _MyAppState extends State<MyApp> {
                   "Flutter Sample App",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.black,
+                      color: Color(0xFF000000),
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
@@ -82,7 +64,7 @@ class _MyAppState extends State<MyApp> {
                 Text(
                   "SessionID: $sessionId",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 16),
+                  style: TextStyle(color: Color(0xFF000000), fontSize: 16),
                 ),
                 SizedBox(
                   height: 20,
@@ -100,7 +82,22 @@ class _MyAppState extends State<MyApp> {
                         });
                       }
                     },
-                    child: Text("Get Session ID"))
+                    child: Text("Get Session ID")),
+                if (kIsWeb)
+                  TextButton(
+                      onPressed: () async {
+                        await VerisoulSdk.reinitialize();
+                      },
+                      child: Text("reinitialize")),
+                if (kIsWeb)
+                  TextButton(
+                      onPressed: () async {
+                        await VerisoulSdk.setAccountData(
+                            id: "example-id",
+                            email: "example@example.com",
+                            metadata: {"paid": true});
+                      },
+                      child: Text("Set Account")),
               ],
             ),
           ),

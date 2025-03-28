@@ -12,6 +12,14 @@ extension String: @retroactive Error {}
 
 
 class VerisoulApi : VerisoulApiHostApi{
+    func setAccountData(account: [String : Any?]) throws {
+
+    }
+    
+    func reinitialize() throws {
+        
+    }
+    
     
     static let sdkLogLevels: [Int64: VerisoulSDK.VerisoulEnvironment] = [
        0: .dev,
@@ -19,6 +27,8 @@ class VerisoulApi : VerisoulApiHostApi{
        2: .sandbox,
        3: .staging
      ]
+    
+    
 func configure(enviromentVariable: Int64, projectId: String) throws {
     guard let env = VerisoulApi.sdkLogLevels[enviromentVariable] else {
         throw "Invalid environment value: \(enviromentVariable)"

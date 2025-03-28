@@ -90,6 +90,8 @@ protocol VerisoulApiHostApi {
   func configure(enviromentVariable: Int64, projectId: String) throws
   func onTouchEvent(x: Double, y: Double, motionType: Int64) throws
   func getSessionId(completion: @escaping (Result<String, Error>) -> Void)
+  func reinitialize() throws
+  func setAccountData(account: [String: Any?]) throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -145,6 +147,34 @@ class VerisoulApiHostApiSetup {
       }
     } else {
       getSessionIdChannel.setMessageHandler(nil)
+    }
+    let reinitializeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.verisoul_sdk.VerisoulApiHostApi.reinitialize\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      reinitializeChannel.setMessageHandler { _, reply in
+        do {
+          try api.reinitialize()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      reinitializeChannel.setMessageHandler(nil)
+    }
+    let setAccountDataChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.verisoul_sdk.VerisoulApiHostApi.setAccountData\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setAccountDataChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let accountArg = args[0] as! [String: Any?]
+        do {
+          try api.setAccountData(account: accountArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setAccountDataChannel.setMessageHandler(nil)
     }
   }
 }

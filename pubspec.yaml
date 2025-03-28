@@ -1,6 +1,6 @@
 name: verisoul_sdk
 description: "Verisoul helps businesses stop fake accounts and fraud"
-version: 0.3.1
+version: 0.4.0
 homepage: https://www.verisoul.ai/
 repository: https://github.com/verisoul/flutter-sdk
 
@@ -17,6 +17,8 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.1.8
+  flutter_web_plugins:
+    sdk: flutter
 #  ...
 
 dev_dependencies:
@@ -49,6 +51,9 @@ flutter:
         pluginClass: VerisoulSdkPlugin
       ios:
         pluginClass: VerisoulSdkPlugin
+      web:
+        pluginClass: VerisoulSdkPlugin
+        fileName: src/web/verisoul_sdk_plugin_web.dart
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
