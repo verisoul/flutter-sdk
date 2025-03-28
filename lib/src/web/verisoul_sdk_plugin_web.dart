@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:js_interop';
-
+import 'dart:js_interop_unsafe';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:verisoul_sdk/src/generated/verisoul.api.g.dart';
@@ -15,9 +15,26 @@ class VerisoulSdkPlugin extends VerisoulApiHostApi {
   @override
   Future<void> configure(int enviromentVariable, String projectId) async {}
 
+  /// ✅ Check if the Verisoul SDK is loaded
+  bool isVerisoulLoaded() {
+    return globalContext.has("Verisoul");
+  }
+
+  /// Waits until Verisoul SDK is available (up to 10 seconds)
+  Future<void> waitForVerisoul({int timeoutMs = 10000}) async {
+    final start = DateTime.now();
+    while (!isVerisoulLoaded()) {
+      if (DateTime.now().difference(start).inMilliseconds > timeoutMs) {
+        throw Exception("Verisoul SDK failed to load JS SDK");
+      }
+      await Future.delayed(Duration(milliseconds: 2000));
+    }
+  }
+
   @override
   Future<String> getSessionId() async {
     try {
+      await waitForVerisoul();
       final jsPromise = VerisoulJS.session();
       if (jsPromise == null) return '';
 
@@ -32,7 +49,7 @@ class VerisoulSdkPlugin extends VerisoulApiHostApi {
       return sessionId;
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
-      throw Exception("Unable to retrieve sessionId");
+      rethrow;
     }
   }
 
