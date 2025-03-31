@@ -52,7 +52,7 @@ allprojects {
  }
 ```
 ### 3. Web support 
-Add the Verisoul script to your HTML:
+Add the Verisoul script to your `web/index.html`:
 
 ```html
 <script async src="https://js.verisoul.ai/{env}/bundle.js" verisoul-project-id="{project_id}"></script>

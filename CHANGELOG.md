@@ -1,3 +1,5 @@
+## 0.4.2
+* Add Web support
 ## 0.4.1
 * Add Web support
 ## 0.4.0
