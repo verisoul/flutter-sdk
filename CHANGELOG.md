@@ -1,3 +1,5 @@
+## 0.4.3
+* Fixed crash in Android WebView error handling when error description is null.
 ## 0.4.2
 * Add Web support
 ## 0.4.1
