@@ -1,3 +1,5 @@
+## 0.4.4
+* Bump verisoul android SDK to 0.3.4
 ## 0.4.3
 * Fixed crash in Android WebView error handling when error description is null.
 ## 0.4.2

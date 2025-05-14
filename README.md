@@ -27,7 +27,7 @@ dependencies:
       sdk: flutter
    #  ...
    
-   verisoul_sdk: 0.1.0
+   verisoul_sdk: 0.4.4
 ```
 
 ### 2. Update the Android minimum `minSdk` to **24** in `android/app/build.gradle`
