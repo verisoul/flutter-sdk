@@ -17,7 +17,8 @@ class VerisoulApi : VerisoulApiHostApi{
     }
     
     func reinitialize() throws {
-        
+
+        Verisoul.shared.reinitialize()
     }
     
     
@@ -29,12 +30,12 @@ class VerisoulApi : VerisoulApiHostApi{
      ]
     
     
-func configure(enviromentVariable: Int64, projectId: String) throws {
+    func configure(enviromentVariable: Int64, projectId: String, reinitialize:Bool) throws {
     guard let env = VerisoulApi.sdkLogLevels[enviromentVariable] else {
         throw "Invalid environment value: \(enviromentVariable)"
        }
 
-       Verisoul.shared.configure(env: env, projectId: projectId)
+       Verisoul.shared.configure(env: env, projectId: projectId,reinitialize: reinitialize)
 }
 
 func onTouchEvent(x: Double, y: Double, motionType: Int64) throws {

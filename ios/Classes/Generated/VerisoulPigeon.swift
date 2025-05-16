@@ -87,7 +87,7 @@ class VerisoulPigeonPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendabl
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol VerisoulApiHostApi {
-  func configure(enviromentVariable: Int64, projectId: String) throws
+  func configure(enviromentVariable: Int64, projectId: String, reinitialize: Bool) throws
   func onTouchEvent(x: Double, y: Double, motionType: Int64) throws
   func getSessionId(completion: @escaping (Result<String, Error>) -> Void)
   func reinitialize() throws
@@ -106,8 +106,9 @@ class VerisoulApiHostApiSetup {
         let args = message as! [Any?]
         let enviromentVariableArg = args[0] as! Int64
         let projectIdArg = args[1] as! String
+        let reinitializeArg = args[2] as! Bool
         do {
-          try api.configure(enviromentVariable: enviromentVariableArg, projectId: projectIdArg)
+          try api.configure(enviromentVariable: enviromentVariableArg, projectId: projectIdArg, reinitialize: reinitializeArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))

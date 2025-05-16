@@ -51,7 +51,8 @@ class VerisoulApiHostApi {
 
   final String pigeonVar_messageChannelSuffix;
 
-  Future<void> configure(int enviromentVariable, String projectId) async {
+  Future<void> configure(
+      int enviromentVariable, String projectId, bool reinitialize) async {
     final String pigeonVar_channelName =
         'dev.flutter.pigeon.verisoul_sdk.VerisoulApiHostApi.configure$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
@@ -61,7 +62,8 @@ class VerisoulApiHostApi {
       binaryMessenger: pigeonVar_binaryMessenger,
     );
     final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[enviromentVariable, projectId]) as List<Object?>?;
+            .send(<Object?>[enviromentVariable, projectId, reinitialize])
+        as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {

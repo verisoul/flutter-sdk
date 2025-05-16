@@ -1,3 +1,9 @@
+## 0.4.42
+* Bump verisoul android SDK to 0.3.23
+* Bump verisoul iOS SDK to 0.3.1
+* allow to reinitialize session
+## 0.4.41
+* Bump verisoul android SDK to 0.3.22
 ## 0.4.4
 * Bump verisoul android SDK to 0.3.4
 ## 0.4.3

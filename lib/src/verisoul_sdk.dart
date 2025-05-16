@@ -27,8 +27,9 @@ class VerisoulSdk {
   static Future<void> configure({
     VerisoulEnvironment environment = VerisoulEnvironment.dev,
     required String projectId,
+    bool reinitialize = false,
   }) =>
-      _host.configure(environment.index, projectId);
+      _host.configure(environment.index, projectId, reinitialize);
 
   /// Reports touch events.
   static Future<void> touchEvent({
@@ -48,7 +49,6 @@ class VerisoulSdk {
               VerisoulAccount(id: id, email: email, metadata: metadata).toMap())
           : Future<void>.value();
 
-  /// Reinitializes the SDK (Web-only).
-  static Future<void> reinitialize() =>
-      kIsWeb ? _host.reinitialize() : Future<void>.value();
+  /// Reinitializes the SDK.
+  static Future<void> reinitialize() => _host.reinitialize();
 }
