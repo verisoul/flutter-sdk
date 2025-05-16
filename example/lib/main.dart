@@ -6,8 +6,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   VerisoulSdk.configure(
       projectId: "00000000-0000-0000-0000-000000000001",
-      environment: VerisoulEnvironment.prod,
-      reinitialize: false);
+      environment: VerisoulEnvironment.prod);
   runApp(VerisoulWrapper(child: const MyApp()));
 }
 

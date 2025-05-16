@@ -28,13 +28,13 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
-    override fun configure(enviromentVariable: Long, projectId: String, reinitialize: Boolean) {
+    override fun configure(enviroment: Long, projectId: String) {
         mainHandler.post {
             try {
-                val logLevel = sdkLogLevels[enviromentVariable.toInt()]
-                    ?: throw IllegalArgumentException("Invalid environment: $enviromentVariable")
+                val logLevel = sdkLogLevels[enviroment.toInt()]
+                    ?: throw IllegalArgumentException("Invalid environment: $enviroment")
 
-                Verisoul.init(context, logLevel, projectId, reinitialize = reinitialize)
+                Verisoul.init(context, logLevel, projectId)
 
             } catch (e: Exception) {
                 e.printStackTrace();

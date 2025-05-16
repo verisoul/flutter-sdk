@@ -27,9 +27,8 @@ class VerisoulSdk {
   static Future<void> configure({
     VerisoulEnvironment environment = VerisoulEnvironment.dev,
     required String projectId,
-    bool reinitialize = false,
   }) =>
-      _host.configure(environment.index, projectId, reinitialize);
+      _host.configure(environment.index, projectId);
 
   /// Reports touch events.
   static Future<void> touchEvent({

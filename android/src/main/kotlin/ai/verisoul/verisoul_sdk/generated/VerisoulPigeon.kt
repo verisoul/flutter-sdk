@@ -57,7 +57,7 @@ private open class VerisoulPigeonPigeonCodec : StandardMessageCodec() {
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface VerisoulApiHostApi {
-  fun configure(enviromentVariable: Long, projectId: String, reinitialize: Boolean)
+  fun configure(enviromentVariable: Long, projectId: String)
   fun onTouchEvent(x: Double, y: Double, motionType: Long)
   fun getSessionId(callback: (Result<String>) -> Unit)
   fun reinitialize()
@@ -79,9 +79,8 @@ interface VerisoulApiHostApi {
             val args = message as List<Any?>
             val enviromentVariableArg = args[0] as Long
             val projectIdArg = args[1] as String
-            val reinitializeArg = args[2] as Boolean
             val wrapped: List<Any?> = try {
-              api.configure(enviromentVariableArg, projectIdArg, reinitializeArg)
+              api.configure(enviromentVariableArg, projectIdArg)
               listOf(null)
             } catch (exception: Throwable) {
               wrapError(exception)

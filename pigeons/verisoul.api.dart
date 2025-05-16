@@ -2,7 +2,7 @@ import 'package:pigeon/pigeon.dart';
 
 @HostApi()
 abstract class VerisoulApiHostApi {
-  void configure(int enviromentVariable, String projectId, bool reinitialize);
+  void configure(int enviromentVariable, String projectId);
 
   void onTouchEvent(double x, double y, int motionType);
 

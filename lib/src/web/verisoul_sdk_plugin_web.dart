@@ -14,8 +14,7 @@ class VerisoulSdkPlugin extends VerisoulApiHostApi {
   }
 
   @override
-  Future<void> configure(
-      int enviromentVariable, String projectId, bool reinitialize) async {}
+  Future<void> configure(int enviromentVariable, String projectId) async {}
 
   /// ✅ Check if the Verisoul SDK is loaded
   bool isVerisoulLoaded() {
