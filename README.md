@@ -105,12 +105,13 @@ Wrap our App with  `VerisoulWrapper`
 ```dart
 runApp(VerisoulWrapper(child: const MyApp()));
 ```
-### 4. Reinitialize (Web-only)
+### 4. Reinitialize
 
 Calling `VerisoulSdk.reinitialize()` generates a new `session_id`, which ensures that if a user logs out of one account and into a different account, Verisoul will be able to delineate each account’s data cleanly.
 ```dart
 await VerisoulSdk.reinitialize();
 ```
+
 ### 5.SetAccountData (Web-only)
 The `setAccountData()` function provides a simplified way to send user account information to Verisoul directly from the client side. While easy to integrate, this method has important limitations:
 

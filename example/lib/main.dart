@@ -5,7 +5,8 @@ import 'package:verisoul_sdk/verisoul_sdk.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   VerisoulSdk.configure(
-      projectId: "Project ID", environment: VerisoulEnvironment.prod);
+      projectId: "00000000-0000-0000-0000-000000000001",
+      environment: VerisoulEnvironment.prod);
   runApp(VerisoulWrapper(child: const MyApp()));
 }
 
@@ -83,12 +84,21 @@ class _MyAppState extends State<MyApp> {
                       }
                     },
                     child: Text("Get Session ID")),
-                if (kIsWeb)
-                  TextButton(
-                      onPressed: () async {
+                TextButton(
+                    onPressed: () async {
+                      try {
                         await VerisoulSdk.reinitialize();
-                      },
-                      child: Text("reinitialize")),
+                        final session = await VerisoulSdk.getSessionApi();
+                        setState(() {
+                          sessionId = session ?? "Invalid";
+                        });
+                      } catch (e) {
+                        setState(() {
+                          sessionId = e.toString();
+                        });
+                      }
+                    },
+                    child: Text("reinitialize")),
                 if (kIsWeb)
                   TextButton(
                       onPressed: () async {

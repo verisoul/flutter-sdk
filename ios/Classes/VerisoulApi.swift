@@ -17,7 +17,8 @@ class VerisoulApi : VerisoulApiHostApi{
     }
     
     func reinitialize() throws {
-        
+
+        Verisoul.shared.reinitialize()
     }
     
     

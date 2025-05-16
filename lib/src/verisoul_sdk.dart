@@ -48,7 +48,6 @@ class VerisoulSdk {
               VerisoulAccount(id: id, email: email, metadata: metadata).toMap())
           : Future<void>.value();
 
-  /// Reinitializes the SDK (Web-only).
-  static Future<void> reinitialize() =>
-      kIsWeb ? _host.reinitialize() : Future<void>.value();
+  /// Reinitializes the SDK.
+  static Future<void> reinitialize() => _host.reinitialize();
 }

@@ -78,6 +78,13 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
     }
 
     override fun reinitialize() {
+        mainHandler.post {
+            try {
+                Verisoul.reinitialize()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
     }
 
