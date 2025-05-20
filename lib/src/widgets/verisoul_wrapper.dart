@@ -15,28 +15,31 @@ class VerisoulWrapper extends StatelessWidget {
       return child;
     }
     if (Platform.isAndroid) {
-      return GestureDetector(
-          behavior:
-              HitTestBehavior.translucent, // Ensures gestures pass through
-          onPanDown: (event) {
-            VerisoulSdk.touchEvent(
-                x: event.localPosition.dx,
-                y: event.localPosition.dy,
-                action: MotionAction.down);
-          },
-          onPanEnd: (event) {
-            VerisoulSdk.touchEvent(
-                x: event.localPosition.dx,
-                y: event.localPosition.dy,
-                action: MotionAction.up);
-          },
-          onPanUpdate: (event) {
-            VerisoulSdk.touchEvent(
-                x: event.localPosition.dx,
-                y: event.localPosition.dy,
-                action: MotionAction.move);
-          },
-          child: child);
+      return Listener(
+        behavior: HitTestBehavior.translucent, // Ensures gestures pass through
+        onPointerDown: (event) {
+          VerisoulSdk.touchEvent(
+            x: event.localPosition.dx,
+            y: event.localPosition.dy,
+            action: MotionAction.down,
+          );
+        },
+        onPointerMove: (event) {
+          VerisoulSdk.touchEvent(
+            x: event.localPosition.dx,
+            y: event.localPosition.dy,
+            action: MotionAction.move,
+          );
+        },
+        onPointerUp: (event) {
+          VerisoulSdk.touchEvent(
+            x: event.localPosition.dx,
+            y: event.localPosition.dy,
+            action: MotionAction.up,
+          );
+        },
+        child: child,
+      );
     }
     return child;
   }
