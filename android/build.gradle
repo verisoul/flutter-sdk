@@ -60,7 +60,7 @@ android {
     dependencies {
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
-        api "ai.verisoul:android:0.3.25"
+        api "ai.verisoul:android:0.3.26"
 
     }
 
