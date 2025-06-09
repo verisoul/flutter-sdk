@@ -1,4 +1,6 @@
 ## 0.4.45
+* Bump verisoul iOS SDK to 0.3.15
+## 0.4.45
 * Bump verisoul android SDK to 0.4.
 * Bump verisoul iOS SDK to 0.3.14
 * fix send touch events to verisoul
