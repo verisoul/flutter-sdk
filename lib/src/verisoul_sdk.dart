@@ -20,7 +20,7 @@ enum MotionAction {
 class VerisoulSdk {
   static final _host = VerisoulSdkPlugin();
 
-  /// Retrieves the current session's replay link.
+  /// Retrieves the current session's id.
   static Future<String?> getSessionApi() => _host.getSessionId();
 
   /// Configures the SDK with the provided environment and project ID.

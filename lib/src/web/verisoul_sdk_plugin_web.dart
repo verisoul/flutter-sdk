@@ -37,7 +37,7 @@ class VerisoulSdkPlugin extends VerisoulApiHostApi {
     try {
       await waitForVerisoul();
       final jsPromise = VerisoulJS.session();
-      if (jsPromise == null) return '';
+      if (jsPromise == null) throw Exception("Unable to retrieve sessionId");
 
       // Convert JavaScript Promise to Future
       final resolved = await jsPromise.toDart;
