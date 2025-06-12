@@ -1,4 +1,4 @@
-## 0.4.46
+## 0.4.48
 * Bump verisoul Android SDK to 0.3.27
 * Fix return empty Session ID on web
 ## 0.4.46
