@@ -114,7 +114,7 @@ class _MyAppState extends State<MyApp> {
                 TextButton(
                     onPressed: () async {
                       try {
-                        final session = await _getSessionWithRetry(reinitialize: true);
+                        final session = await _getSessionWithRetry(withReinitialize: true);
                         setState(() {
                           sessionId = session ?? "Invalid";
                         });
