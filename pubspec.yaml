@@ -1,6 +1,6 @@
 name: verisoul_sdk
 description: "Verisoul helps businesses stop fake accounts and fraud"
-version: 0.4.51
+version: 0.4.52
 homepage: https://www.verisoul.ai/
 repository: https://github.com/verisoul/flutter-sdk
 
@@ -24,10 +24,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-  pigeon: ^24.1.0
-  lint: ^2.3.0
-  pana:
+  flutter_lints: ^6.0.0
+  pigeon: ^26.0.0
+  lint: ^2.8.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -63,7 +63,7 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
         mainHandler.post {
             try {
                 Verisoul.getSessionId(object : VerisoulSessionCallback {
-                    override fun onFailure(exception: Exception) {
+                    override fun onFailure(exception: Throwable) {
                         callback.invoke(Result.failure(exception))
                     }
 
@@ -71,7 +71,7 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
                         callback.invoke(Result.success(sessionId))
                     }
                 })
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 callback.invoke(Result.failure(e))
             }
         }
