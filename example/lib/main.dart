@@ -6,9 +6,7 @@ import 'dart:async';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   VerisoulSdk.configure(
-      projectId: "<YOUR_PROJECT_ID>",
-      environment: VerisoulEnvironment.sandbox
-  );
+      projectId: "<YOUR_PROJECT_ID>", environment: VerisoulEnvironment.sandbox);
   runApp(VerisoulWrapper(child: const MyApp()));
 }
 
@@ -34,7 +32,7 @@ class _MyAppState extends State<MyApp> {
   */
   Future<String?> _getSessionWithRetry({bool withReinitialize = false}) async {
     const int maxRetries = 2;
-    
+
     for (int attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         if (withReinitialize && attempt == 0) {
@@ -48,7 +46,7 @@ class _MyAppState extends State<MyApp> {
         }
       }
     }
-    
+
     return null;
   }
 
@@ -114,7 +112,8 @@ class _MyAppState extends State<MyApp> {
                 TextButton(
                     onPressed: () async {
                       try {
-                        final session = await _getSessionWithRetry(withReinitialize: true);
+                        final session =
+                            await _getSessionWithRetry(withReinitialize: true);
                         setState(() {
                           sessionId = session ?? "Invalid";
                         });

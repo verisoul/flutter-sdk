@@ -1,3 +1,7 @@
+## 0.4.52
+* Bump verisoul Android SDK to 0.3.31
+## 0.4.51
+* Bump verisoul Android SDK to 0.3.30
 ## 0.4.50
 * Bump verisoul Android SDK to 0.3.29
 ## 0.4.49
