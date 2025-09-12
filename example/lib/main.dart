@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
 
       request.headers.set('Content-Type', 'application/json');
       request.headers
-          .set('x-api-key', 'KxEv9FlAmC6h6L8uJxctYaAt4IjWoebAarqthqV5');
+          .set('x-api-key', '<YOUR_API_KEY>');
 
       final body = jsonEncode({
         'account': {'id': 'test-$sessionId'},
