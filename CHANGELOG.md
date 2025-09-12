@@ -1,3 +1,8 @@
+## 0.4.56
+* Bump verisoul iOS SDK to 0.4.55
+## 0.4.55
+* Bump verisoul Android SDK to 0.4.55
+* Bump verisoul iOS SDK to 0.4.55
 ## 0.4.54
 * Bump verisoul Android SDK to 0.3.32
 ## 0.4.53

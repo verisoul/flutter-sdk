@@ -1,6 +1,6 @@
 name: verisoul_sdk
 description: "Verisoul helps businesses stop fake accounts and fraud"
-version: 0.4.54
+version: 0.4.56
 homepage: https://www.verisoul.ai/
 repository: https://github.com/verisoul/flutter-sdk
 
