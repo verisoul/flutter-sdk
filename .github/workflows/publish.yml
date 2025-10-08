@@ -1,0 +1,76 @@
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    name: Publish to pub.dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.5"
+          channel: "stable"
+
+      - name: Get tag version
+        id: get_tag
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publishing version: $VERSION"
+
+      - name: Validate pubspec.yaml version
+        run: |
+          PUBSPEC_VERSION=$(grep "^version:" pubspec.yaml | sed 's/version: //')
+          TAG_VERSION="${{ steps.get_tag.outputs.version }}"
+
+          echo "Pubspec version: $PUBSPEC_VERSION"
+          echo "Tag version: $TAG_VERSION"
+
+          if [ "$PUBSPEC_VERSION" != "$TAG_VERSION" ]; then
+            echo "Error: Version mismatch!"
+            echo "pubspec.yaml version ($PUBSPEC_VERSION) must match tag version ($TAG_VERSION)"
+            exit 1
+          fi
+
+          echo "Versions match ✓"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify package
+        run: dart pub publish --dry-run
+
+      - name: Setup pub credentials
+        run: |
+          mkdir -p ~/.pub-cache
+          echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.pub-cache/credentials.json
+
+      - name: Publish to pub.dev
+        run: dart pub publish --force
+
+      - name: Publish Summary
+        run: |
+          echo "============================================"
+          echo "Published Successfully! 🎉"
+          echo "============================================"
+          echo ""
+          echo "Package: verisoul_sdk"
+          echo "Version: ${{ steps.get_tag.outputs.version }}"
+          echo ""
+          echo "Install with:"
+          echo "flutter pub add verisoul_sdk:${{ steps.get_tag.outputs.version }}"
+          echo ""
+          echo "Or add to pubspec.yaml:"
+          echo "dependencies:"
+          echo "  verisoul_sdk: ^${{ steps.get_tag.outputs.version }}"
+          echo "============================================"
