@@ -1,3 +1,53 @@
+## 0.4.59 - 2025-10-10
+* Update verisoul/native-android-sdk to version 0.4.59-beta
+* ci: update publish workflow to use official dart-lang action with OIDC auth
+* ci: add automated version management and pub.dev publishing workflow
+* Release: 0.4.58
+* Release: 0.4.57
+* cleanup
+* Release: 0.4.56
+* Release: 0.4.55
+* Release: 0.4.55
+* Release: 0.4.54
+* Release: 0.4.53
+* Release: 0.4.53
+* Merge pull request #4
+* Release: 0.4.50
+* Release: 0.4.50
+* Release: 0.4.49
+* cleanup
+* add retry example
+* Release: 0.4.49
+* Release: 0.4.49
+* Release: 0.4.48
+* Release: 0.4.47
+* fix: empty session id
+* fix: empty session id
+* Release: 0.4.46
+* Release: 0.4.46
+* Release: 0.4.45
+* Release: 0.4.44
+* Release: 0.4.43
+* Release: 0.4.42
+* Release: 0.4.42
+* Release: 0.4.42
+* Release: 0.4.42
+* Release: 0.4.4
+* Release: 0.4.3
+* Release: 0.4.2
+* Release: 0.4.1
+* Release: 0.4.0
+* Release: 0.4.0
+* Release: 0.3.1
+* Release: 0.3.1
+* Release: 0.3.0
+* fix: README file
+* init
+* init
+* init
+* init
+
+
 ## 0.4.58
 * Bump verisoul ios SDK to 0.4.57
 ## 0.4.57
