@@ -23,14 +23,15 @@ get started.
 
 ```yaml
 dependencies:
-   flutter:
-      sdk: flutter
-   #  ...
-   
-   verisoul_sdk: 0.4.4
+  flutter:
+    sdk: flutter
+  #  ...
+
+  verisoul_sdk: 0.4.4
 ```
 
 ### 2. Update the Android minimum `minSdk` to **24** in `android/app/build.gradle`
+
 ```groovy
  defaultConfig {
     minSdk = 24
@@ -39,7 +40,7 @@ dependencies:
 ```
 
 If an exception occurs during the build stating that the `ai.verisoul:android` package cannot be downloaded, add the
-   following Maven repository inside your `android/build.gradle` file:
+following Maven repository inside your `android/build.gradle` file:
 
 ```groovy
 allprojects {
@@ -51,27 +52,34 @@ allprojects {
     }
  }
 ```
-### 3. Web support 
+
+### 3. Web support
+
 Add the Verisoul script to your `web/index.html`:
 
 ```html
-<script async src="https://js.verisoul.ai/{env}/bundle.js" verisoul-project-id="{project_id}"></script>
+<script
+  async
+  src="https://js.verisoul.ai/{env}/bundle.js"
+  verisoul-project-id="{project_id}"
+></script>
 ```
 
 #### Replace the following parameters:
 
-* **{env}** : Use either `prod` or `sandbox`
-* **{project_id**} : Your project ID, which must match the environment
-
+- **{env}** : Use either `prod` or `sandbox`
+- **{project_id**} : Your project ID, which must match the environment
 
 #### Content Security Policy (CSP)
+
 If your application has a Content Security Policy, update it to include the following Verisoul domains:
 
-
 ```html
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://js.verisoul.ai; worker-src 'self' blob: data:;connect-src 'self' https://*.verisoul.ai wss://*.verisoul.ai;">
+<meta
+  http-equiv="Content-Security-Policy"
+  content="script-src 'self' https://js.verisoul.ai; worker-src 'self' blob: data:;connect-src 'self' https://*.verisoul.ai wss://*.verisoul.ai;"
+/>
 ```
-
 
 ## Usage
 
@@ -101,23 +109,29 @@ final session = await VerisoulSdk.getSessionApi();
 ```
 
 ### 3. Provide Touch Events
-Wrap our App with  `VerisoulWrapper`
+
+Wrap our App with `VerisoulWrapper`
+
 ```dart
 runApp(VerisoulWrapper(child: const MyApp()));
 ```
+
 ### 4. Reinitialize
 
 Calling `VerisoulSdk.reinitialize()` generates a new `session_id`, which ensures that if a user logs out of one account and into a different account, Verisoul will be able to delineate each account’s data cleanly.
+
 ```dart
 await VerisoulSdk.reinitialize();
 ```
 
 ### 5.SetAccountData (Web-only)
+
 The `setAccountData()` function provides a simplified way to send user account information to Verisoul directly from the client side. While easy to integrate, this method has important limitations:
 
-* **Offline analysis only**: Data sent via account() is only visible in the Verisoul dashboard
-* **No real-time decisions**: Unlike the server-side API, this method doesn’t allow your application to receive and act on Verisoul’s risk scores in real-time 
-* **Limited use case**: Designed specifically for initial pilots and evaluation purposes
+- **Offline analysis only**: Data sent via account() is only visible in the Verisoul dashboard
+- **No real-time decisions**: Unlike the server-side API, this method doesn’t allow your application to receive and act on Verisoul’s risk scores in real-time
+- **Limited use case**: Designed specifically for initial pilots and evaluation purposes
+
 ```dart
     await VerisoulSdk.setAccountData(
       id: "example-id",
@@ -163,7 +177,7 @@ Update your app’s entitlements file:
 
 ## Update the privacy manifest file
 
-```xml
+````xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -229,7 +243,25 @@ Update your app’s entitlements file:
   </dict>
 </plist>
 
+## Releasing
+
+The release process is fully automated via GitHub Actions. Follow these steps:
+
+### 1. Bump Native Platform Versions
+
+```bash
+make bump-android    # Updates Android SDK version
+make bump-ios        # Updates iOS SDK version
 ```
+
+### 2. Bump Flutter Package Version
+
+```bash
+make release-patch    # 0.4.4 → 0.4.5
+make release-minor    # 0.4.4 → 0.5.0
+make release-major    # 0.4.4 → 1.0.0
+```
+**Note:** Publishing uses OIDC authentication (no manual secrets required).
 
 ## Questions and Feedback
 
@@ -237,5 +269,4 @@ Comprehensive documentation about Verisoul's Android SDK and API can be found
 at [docs.verisoul.ai](https://docs.verisoul.ai/). Additionally, reach out to Verisoul
 at [help@verisoul.ai](mailto:help@verisoul.ai) for any questions or feedback.
 
-
-
+````
