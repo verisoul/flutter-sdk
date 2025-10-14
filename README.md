@@ -242,7 +242,7 @@ Update your app’s entitlements file:
     </array>
   </dict>
 </plist>
-
+````
 ## Releasing
 
 The release process is fully automated via GitHub Actions. Follow these steps:
