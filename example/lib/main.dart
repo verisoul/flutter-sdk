@@ -1,311 +1,407 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:verisoul_sdk/verisoul_sdk.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:math';
+import 'test_harness.dart';
+import 'results_view.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  VerisoulSdk.configure(
-      projectId: "00000000-0000-0000-0000-000000000001",
-      environment: VerisoulEnvironment.prod);
+
+  // Configure SDK on app launch
+  try {
+    await VerisoulSdk.configure(
+      projectId: '<PROJECT_ID>',
+      environment: VerisoulEnvironment.sandbox,
+    );
+    print('Verisoul SDK configured successfully');
+  } catch (error) {
+    print('Failed to configure Verisoul SDK: $error');
+  }
+
   runApp(VerisoulWrapper(child: const MyApp()));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  String sessionId = "";
-  String testStatus = "";
-  int failureCount = 0;
-  final Random _random = Random();
-
-  /*
-  * Optional retry mechanism for getSessionApi()
-  * There are already retries implemented in the SDK but this is an optional fallback function
-  * It is recommended to treat the user as highly suspect if it fails to get a session even after 3 retries 
-  */
-  Future<String?> _getSessionWithRetry({bool withReinitialize = false}) async {
-    const int maxRetries = 2;
-
-    for (int attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        if (withReinitialize && attempt == 0) {
-          await VerisoulSdk.reinitialize();
-        }
-        final session = await VerisoulSdk.getSessionApi();
-        return session;
-      } catch (e) {
-        if (attempt == maxRetries) {
-          rethrow;
-        }
-      }
-    }
-
-    return null;
-  }
-
-  /*
-  * Call the authenticate API similar to Android implementation
-  */
-  Future<bool> _callAuthenticate(String sessionId) async {
-    try {
-      final client = HttpClient();
-      final request = await client.postUrl(
-          Uri.parse('https://api.prod.verisoul.ai/session/authenticate'));
-
-      request.headers.set('Content-Type', 'application/json');
-      request.headers
-          .set('x-api-key', '<YOUR_API_KEY>');
-
-      final body = jsonEncode({
-        'account': {'id': 'test-$sessionId'},
-        'session_id': sessionId,
-      });
-
-      request.write(body);
-
-      final response = await request.close();
-      client.close();
-
-      return response.statusCode == 200;
-    } catch (e) {
-      print('Authenticate API call failed: $e');
-      return false;
-    }
-  }
-
-  /*
-  * Repeat test similar to Android implementation
-  */
-  Future<void> _repeatTest() async {
-    setState(() {
-      testStatus = "Running repeat test...";
-      failureCount = 0;
-    });
-
-    for (int i = 0; i < 4; i++) {
-      try {
-        String? sid;
-        if (i % 3 == 0) {
-          await VerisoulSdk.reinitialize();
-          sid = await _getSessionWithRetry();
-        } else {
-          sid = await _getSessionWithRetry();
-        }
-
-        if (sid != null) {
-          final ok = await _callAuthenticate(sid);
-          print('VS-TEST [$i] sid=$sid  api=${ok ? "200" : "FAIL"}');
-          if (!ok) failureCount++;
-        } else {
-          print('VS-TEST [$i] Failed to get session ID');
-          failureCount++;
-        }
-      } catch (e) {
-        print('VS-TEST [$i] exception -> ${e.toString()}');
-        failureCount++;
-      }
-    }
-
-    setState(() {
-      testStatus = "Repeat test completed. Failures: $failureCount";
-    });
-  }
-
-  /*
-  * Chaos test similar to Android implementation
-  */
-  Future<void> _chaosTest() async {
-    setState(() {
-      testStatus = "Running chaos test...";
-      failureCount = 0;
-    });
-
-    const int rounds = 40;
-    const int concurrency = 8;
-    const int minDelay = 2000;
-    const int maxDelay = 5000;
-
-    print('CHAOS: Launching $concurrency workers for $rounds total rounds');
-
-    final futures = <Future>[];
-
-    for (int workerId = 0; workerId < concurrency; workerId++) {
-      futures
-          .add(_chaosWorker(workerId, rounds, concurrency, minDelay, maxDelay));
-    }
-
-    await Future.wait(futures);
-
-    setState(() {
-      testStatus = "Chaos test completed. Failures: $failureCount";
-    });
-
-    print('CHAOS: Finished $rounds rounds – $failureCount failures');
-  }
-
-  Future<void> _chaosWorker(int workerId, int rounds, int concurrency,
-      int minDelay, int maxDelay) async {
-    for (int round = workerId; round < rounds; round += concurrency) {
-      await _randomWork(round, minDelay, maxDelay);
-    }
-  }
-
-  Future<void> _randomWork(int round, int minDelay, int maxDelay) async {
-    print('CHAOS: → Round $round started');
-
-    try {
-      String? sid;
-
-      if (_random.nextBool()) {
-        print('CHAOS: → Performing reinitialize()');
-        await VerisoulSdk.reinitialize();
-        sid = await _getSessionWithRetry();
-      } else {
-        sid = await _getSessionWithRetry();
-      }
-
-      if (sid != null) {
-        print('CHAOS: → Got sessionId: $sid');
-
-        // Random delay
-        final delay = minDelay + _random.nextInt(maxDelay - minDelay);
-        await Future.delayed(Duration(milliseconds: delay));
-
-        final ok = await _callAuthenticate(sid);
-        print(
-            'CHAOS: [${round.toString().padLeft(2, '0')}] sid=$sid  api=${ok ? "200" : "FAIL"}');
-
-        if (!ok) {
-          setState(() {
-            failureCount++;
-          });
-        }
-      } else {
-        print(
-            'CHAOS: [${round.toString().padLeft(2, '0')}] Failed to get session ID');
-        setState(() {
-          failureCount++;
-        });
-      }
-    } catch (e) {
-      print(
-          'CHAOS: [${round.toString().padLeft(2, '0')}] exception → ${e.toString()}');
-      setState(() {
-        failureCount++;
-      });
-    }
-
-    print('CHAOS: → Round $round done');
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFF5F5F5),
+        primaryColor: const Color(0xFF007AFF),
+      ),
+      home: const TestSuiteScreen(),
+    );
+  }
+}
+
+class TestSuiteScreen extends StatefulWidget {
+  const TestSuiteScreen({Key? key}) : super(key: key);
+
+  @override
+  State<TestSuiteScreen> createState() => _TestSuiteScreenState();
+}
+
+class _TestSuiteScreenState extends State<TestSuiteScreen> {
+  // Test state
+  bool _showResults = false;
+  TestResults? _testResults;
+  String _testType = '';
+  bool _isRunning = false;
+
+  // Repeat Test Config
+  final TextEditingController _repeatRoundsController =
+      TextEditingController(text: '10');
+  final TextEditingController _reinitMultipleController =
+      TextEditingController(text: '3');
+  bool _parallelMode = false;
+
+  // Chaos Test Config
+  final TextEditingController _chaosRoundsController =
+      TextEditingController(text: '40');
+
+  @override
+  void dispose() {
+    _repeatRoundsController.dispose();
+    _reinitMultipleController.dispose();
+    _chaosRoundsController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleRepeatTest() async {
+    setState(() {
+      _isRunning = true;
+      _testType =
+          _parallelMode ? 'Repeat Test (Parallel)' : 'Repeat Test (Sequential)';
+    });
+
+    final results = await runRepeatTest(
+      int.tryParse(_repeatRoundsController.text) ?? 10,
+      reinitMultiple: int.tryParse(_reinitMultipleController.text) ?? 3,
+      parallel: _parallelMode,
+    );
+
+    setState(() {
+      _testResults = results;
+      _isRunning = false;
+      _showResults = true;
+    });
+  }
+
+  Future<void> _handleChaosTest() async {
+    setState(() {
+      _isRunning = true;
+      _testType = 'Chaos Test';
+    });
+
+    final results = await runChaosTest(
+      int.tryParse(_chaosRoundsController.text) ?? 40,
+      concurrency: 8,
+    );
+
+    setState(() {
+      _testResults = results;
+      _isRunning = false;
+      _showResults = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  // Header
+                  _buildHeader(),
+                  const Divider(height: 40, color: Color(0xFFDDDDDD)),
+                  // Repeat Test Section
+                  _buildRepeatTestSection(),
+                  const Divider(height: 40, color: Color(0xFFDDDDDD)),
+                  // Chaos Test Section
+                  _buildChaosTestSection(),
+                  if (_isRunning) ...[
+                    const SizedBox(height: 20),
+                    _buildLoadingIndicator(),
+                  ],
+                ],
+              ),
+            ),
+            if (_showResults && _testResults != null)
+              ResultsView(
+                results: _testResults!,
+                testType: _testType,
+                onDismiss: () {
+                  setState(() {
+                    _showResults = false;
+                    _testResults = null;
+                  });
+                },
+              ),
+          ],
         ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    "assets/verisoul-logo-light.png",
-                    height: 80,
-                    fit: BoxFit.fill,
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        const Text(
+          '🛡️',
+          style: TextStyle(fontSize: 60),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          'Verisoul SDK Test Suite',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRepeatTestSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Repeat Test',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF0F0F0),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            children: [
+              _buildInputRow(
+                label: 'Number of Rounds:',
+                controller: _repeatRoundsController,
+                placeholder: '10',
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Text(
+                    'Reinitialize Every:',
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Flutter Sample App",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Color(0xFF000000),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "SessionID: $sessionId",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Color(0xFF000000), fontSize: 16),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Test Status: $testStatus",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Color(0xFF666666), fontSize: 14),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                TextButton(
-                    onPressed: () async {
-                      try {
-                        final session = await _getSessionWithRetry();
-                        setState(() {
-                          sessionId = session ?? "Invalid";
-                        });
-                      } catch (e) {
-                        setState(() {
-                          sessionId = "Verisoul failed to get session";
-                        });
-                      }
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: _reinitMultipleController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(fontSize: 16),
+                      decoration: InputDecoration(
+                        hintText: '3',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: const BorderSide(color: Color(0xFFCCCCCC)),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 8,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'rounds',
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Parallel Mode (Fire All at Once)',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  ),
+                  Switch(
+                    value: _parallelMode,
+                    onChanged: (value) {
+                      setState(() {
+                        _parallelMode = value;
+                      });
                     },
-                    child: Text("Get Session ID")),
-                TextButton(
-                    onPressed: () async {
-                      try {
-                        final session =
-                            await _getSessionWithRetry(withReinitialize: true);
-                        setState(() {
-                          sessionId = session ?? "Invalid";
-                        });
-                      } catch (e) {
-                        setState(() {
-                          sessionId = "Verisoul failed to get session";
-                        });
-                      }
-                    },
-                    child: Text("reinitialize")),
-                SizedBox(height: 10),
-                TextButton(onPressed: _repeatTest, child: Text("Repeat Test")),
-                TextButton(onPressed: _chaosTest, child: Text("Chaos Test")),
-                if (kIsWeb)
-                  TextButton(
-                      onPressed: () async {
-                        await VerisoulSdk.setAccountData(
-                            id: "example-id",
-                            email: "example@example.com",
-                            metadata: {"paid": true});
-                      },
-                      child: Text("Set Account")),
-              ],
+                    activeColor: const Color(0xFF007AFF),
+                    activeTrackColor: const Color(0xFF81b0ff),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                _parallelMode
+                    ? '⚡ All requests fire simultaneously'
+                    : '📝 Requests run sequentially',
+                style: const TextStyle(fontSize: 14, color: Color(0xFF666666)),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 15),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _isRunning ? null : _handleRepeatTest,
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  _isRunning ? const Color(0xFF999999) : const Color(0xFF007AFF),
+              padding: const EdgeInsets.all(15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text(
+              '🔁 Run Repeat Test',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget _buildChaosTestSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Chaos Test',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF0F0F0),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            children: [
+              _buildInputRow(
+                label: 'Number of Rounds:',
+                controller: _chaosRoundsController,
+                placeholder: '40',
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Runs 8 concurrent workers with random delays',
+                style: TextStyle(fontSize: 14, color: Color(0xFF666666)),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 15),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _isRunning ? null : _handleChaosTest,
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  _isRunning ? const Color(0xFF999999) : const Color(0xFFFF9500),
+              padding: const EdgeInsets.all(15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text(
+              '🌪️ Run Chaos Test',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInputRow({
+    required String label,
+    required TextEditingController controller,
+    required String placeholder,
+  }) {
+    return Row(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, color: Colors.black),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.right,
+            style: const TextStyle(fontSize: 16),
+            decoration: InputDecoration(
+              hintText: placeholder,
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: const BorderSide(color: Color(0xFFCCCCCC)),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 8,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return Column(
+      children: const [
+        CircularProgressIndicator(
+          color: Color(0xFF007AFF),
+        ),
+        SizedBox(height: 10),
+        Text(
+          'Running test...',
+          style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+        ),
+      ],
     );
   }
 }
