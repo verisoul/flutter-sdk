@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
-import 'package:verisoul_sdk/src/errors/verisoul_error_codes.dart';
 import 'package:verisoul_sdk/src/errors/verisoul_sdk_init_exception.dart';
 import 'package:verisoul_sdk/src/models/verisoul_account.dart';
 import 'package:verisoul_sdk/src/web/verisoul_sdk_plugin_web.dart'
@@ -101,5 +100,17 @@ class VerisoulSdk {
   /// Reinitializes the Verisoul SDK.
   ///
   /// Useful if configuration has changed or a fresh session is required.
-  static Future<void> reinitialize() => _host.reinitialize();
+  ///
+  /// Throws [VerisoulSdkException] if reinitialization fails
+  static Future<void> reinitialize() async {
+    try {
+      await _host.reinitialize();
+    } on PlatformException catch (e) {
+      throw VerisoulSdkException(
+        e.code,
+        e.message ?? 'Failed to reinitialize Verisoul SDK',
+        cause: e,
+      );
+    }
+  }
 }

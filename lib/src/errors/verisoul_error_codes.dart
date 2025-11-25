@@ -7,9 +7,6 @@ class VerisoulErrorCodes {
   /// Session is not available or could not be retrieved
   static const String sessionUnavailable = 'SESSION_UNAVAILABLE';
 
-  /// SDK configuration failed
-  static const String sdkError = 'SDK_ERROR';
-
   /// Invalid environment parameter
   static const String invalidEnvironment = 'INVALID_ENVIRONMENT';
 }

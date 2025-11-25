@@ -53,19 +53,5 @@ void main() {
       expect(exception.code, equals('INVALID_ENVIRONMENT'));
       expect(exception.message, contains('Invalid environment'));
     });
-
-    /**
-     * Test: Verify SDK_ERROR structure for generic errors
-     */
-    test('methods throw SDK_ERROR for generic failures', () {
-      final exception = VerisoulSdkException(
-        VerisoulErrorCodes.sdkError,
-        'SDK configuration failed',
-      );
-
-      expect(exception.code, equals(VerisoulErrorCodes.sdkError));
-      expect(exception.code, equals('SDK_ERROR'));
-      expect(exception.message, contains('SDK configuration failed'));
-    });
   });
 }

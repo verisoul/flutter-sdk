@@ -2,7 +2,10 @@ package ai.verisoul.verisoul_sdk
 
 import ai.verisoul.sdk.Verisoul
 import ai.verisoul.sdk.VerisoulEnvironment
+import ai.verisoul.sdk.VerisoulErrorCodes
+import ai.verisoul.sdk.VerisoulException
 import ai.verisoul.sdk.helpers.webview.VerisoulSessionCallback
+import ai.verisoul.verisoul_sdk.generated.FlutterError
 import ai.verisoul.verisoul_sdk.generated.VerisoulApiHostApi
 import android.content.Context
 import android.os.Handler
@@ -22,9 +25,7 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
         0 to MotionEvent.ACTION_DOWN,
         1 to MotionEvent.ACTION_UP,
         2 to MotionEvent.ACTION_MOVE,
-
-        )
-
+    )
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -32,12 +33,20 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
         mainHandler.post {
             try {
                 val logLevel = sdkLogLevels[enviroment.toInt()]
-                    ?: throw IllegalArgumentException("Invalid environment: $enviroment")
+                    ?: throw FlutterError(
+                        VerisoulErrorCodes.INVALID_ENVIRONMENT,
+                        "Invalid environment: $enviroment",
+                        null
+                    )
 
                 Verisoul.init(context, logLevel, projectId)
 
+            } catch (e: FlutterError) {
+                throw e
+            } catch (e: VerisoulException) {
+                throw FlutterError(e.code, e.message, null)
             } catch (e: Exception) {
-                e.printStackTrace();
+                e.printStackTrace()
             }
         }
     }
@@ -55,7 +64,7 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
             Verisoul.onTouchEvent(motionEvent)
 
         } catch (e: Exception) {
-            e.printStackTrace();
+            e.printStackTrace()
         }
     }
 
@@ -64,15 +73,37 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
             try {
                 Verisoul.getSessionId(object : VerisoulSessionCallback {
                     override fun onFailure(exception: Throwable) {
-                        callback.invoke(Result.failure(exception))
+                        if (exception is VerisoulException) {
+                            callback.invoke(Result.failure(FlutterError(
+                                exception.code,
+                                exception.message,
+                                null
+                            )))
+                        } else {
+                            callback.invoke(Result.failure(FlutterError(
+                                VerisoulErrorCodes.SESSION_UNAVAILABLE,
+                                exception.message ?: "Failed to retrieve session ID",
+                                null
+                            )))
+                        }
                     }
 
                     override fun onSuccess(sessionId: String) {
                         callback.invoke(Result.success(sessionId))
                     }
                 })
+            } catch (e: VerisoulException) {
+                callback.invoke(Result.failure(FlutterError(
+                    e.code,
+                    e.message,
+                    null
+                )))
             } catch (e: Throwable) {
-                callback.invoke(Result.failure(e))
+                callback.invoke(Result.failure(FlutterError(
+                    VerisoulErrorCodes.SESSION_UNAVAILABLE,
+                    e.message ?: "Failed to retrieve session ID",
+                    null
+                )))
             }
         }
     }
@@ -85,7 +116,6 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
                 e.printStackTrace()
             }
         }
-
     }
 
     override fun setAccountData(account: Map<String, Any?>) {
