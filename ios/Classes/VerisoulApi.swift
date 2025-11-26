@@ -8,6 +8,13 @@
 import Foundation
 import VerisoulSDK
 
+/// Local error code constants matching the native SDK
+private struct ErrorCodes {
+    static let WEBVIEW_UNAVAILABLE = "WEBVIEW_UNAVAILABLE"
+    static let SESSION_UNAVAILABLE = "SESSION_UNAVAILABLE"
+    static let INVALID_ENVIRONMENT = "INVALID_ENVIRONMENT"
+}
+
 class VerisoulApi : VerisoulApiHostApi{
     func setAccountData(account: [String : Any?]) throws {
 
@@ -29,7 +36,7 @@ class VerisoulApi : VerisoulApiHostApi{
     func configure(enviromentVariable: Int64, projectId: String) throws {
         guard let env = VerisoulApi.sdkLogLevels[enviromentVariable] else {
             throw PigeonError(
-                code: VerisoulErrorCodes.INVALID_ENVIRONMENT,
+                code: ErrorCodes.INVALID_ENVIRONMENT,
                 message: "Invalid environment value: \(enviromentVariable)",
                 details: nil
             )
@@ -47,15 +54,11 @@ class VerisoulApi : VerisoulApiHostApi{
             do {
                 let sessionId = try await Verisoul.shared.session()
                 completion(Result.success(sessionId))
-            } catch let error as VerisoulException {
+            } catch let error as NSError {
+                // Extract error code from NSError - the native SDK throws VerisoulException which is an NSError subclass
+                let errorCode = error.userInfo["errorCode"] as? String ?? ErrorCodes.SESSION_UNAVAILABLE
                 completion(Result.failure(PigeonError(
-                    code: error.errorCode,
-                    message: error.localizedDescription,
-                    details: nil
-                )))
-            } catch {
-                completion(Result.failure(PigeonError(
-                    code: VerisoulErrorCodes.SESSION_UNAVAILABLE,
+                    code: errorCode,
                     message: error.localizedDescription,
                     details: nil
                 )))
