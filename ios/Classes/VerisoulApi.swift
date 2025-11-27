@@ -13,6 +13,7 @@ private struct ErrorCodes {
     static let WEBVIEW_UNAVAILABLE = "WEBVIEW_UNAVAILABLE"
     static let SESSION_UNAVAILABLE = "SESSION_UNAVAILABLE"
     static let INVALID_ENVIRONMENT = "INVALID_ENVIRONMENT"
+    static let UNKNOWN_ERROR = "UNKNOWN_ERROR"
 }
 
 class VerisoulApi : VerisoulApiHostApi{
@@ -20,8 +21,18 @@ class VerisoulApi : VerisoulApiHostApi{
 
     }
     
-    func reinitialize() throws {
-        Verisoul.shared.reinitialize()
+    func reinitialize(completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            Verisoul.shared.reinitialize()
+            completion(.success(()))
+        } catch let error as NSError {
+            let errorCode = error.userInfo["errorCode"] as? String ?? ErrorCodes.UNKNOWN_ERROR
+            completion(.failure(PigeonError(
+                code: errorCode,
+                message: error.localizedDescription,
+                details: nil
+            )))
+        }
     }
     
     
@@ -33,16 +44,27 @@ class VerisoulApi : VerisoulApiHostApi{
      ]
     
     
-    func configure(enviromentVariable: Int64, projectId: String) throws {
+    func configure(enviromentVariable: Int64, projectId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let env = VerisoulApi.sdkLogLevels[enviromentVariable] else {
-            throw PigeonError(
+            completion(.failure(PigeonError(
                 code: ErrorCodes.INVALID_ENVIRONMENT,
                 message: "Invalid environment value: \(enviromentVariable)",
                 details: nil
-            )
+            )))
+            return
         }
 
-        Verisoul.shared.configure(env: env, projectId: projectId)
+        do {
+            Verisoul.shared.configure(env: env, projectId: projectId)
+            completion(.success(()))
+        } catch let error as NSError {
+            let errorCode = error.userInfo["errorCode"] as? String ?? ErrorCodes.UNKNOWN_ERROR
+            completion(.failure(PigeonError(
+                code: errorCode,
+                message: error.localizedDescription,
+                details: nil
+            )))
+        }
     }
 
     func onTouchEvent(x: Double, y: Double, motionType: Int64) throws {

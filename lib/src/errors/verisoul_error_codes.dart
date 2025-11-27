@@ -9,4 +9,7 @@ class VerisoulErrorCodes {
 
   /// Invalid environment parameter
   static const String invalidEnvironment = 'INVALID_ENVIRONMENT';
+
+  /// Unknown error occurred
+  static const String unknownError = 'UNKNOWN_ERROR';
 }

@@ -87,10 +87,10 @@ class VerisoulPigeonPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendabl
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol VerisoulApiHostApi {
-  func configure(enviromentVariable: Int64, projectId: String) throws
+  func configure(enviromentVariable: Int64, projectId: String, completion: @escaping (Result<Void, Error>) -> Void)
   func onTouchEvent(x: Double, y: Double, motionType: Int64) throws
   func getSessionId(completion: @escaping (Result<String, Error>) -> Void)
-  func reinitialize() throws
+  func reinitialize(completion: @escaping (Result<Void, Error>) -> Void)
   func setAccountData(account: [String: Any?]) throws
 }
 
@@ -106,11 +106,13 @@ class VerisoulApiHostApiSetup {
         let args = message as! [Any?]
         let enviromentVariableArg = args[0] as! Int64
         let projectIdArg = args[1] as! String
-        do {
-          try api.configure(enviromentVariable: enviromentVariableArg, projectId: projectIdArg)
-          reply(wrapResult(nil))
-        } catch {
-          reply(wrapError(error))
+        api.configure(enviromentVariable: enviromentVariableArg, projectId: projectIdArg) { result in
+          switch result {
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
         }
       }
     } else {
@@ -151,11 +153,13 @@ class VerisoulApiHostApiSetup {
     let reinitializeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.verisoul_sdk.VerisoulApiHostApi.reinitialize\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       reinitializeChannel.setMessageHandler { _, reply in
-        do {
-          try api.reinitialize()
-          reply(wrapResult(nil))
-        } catch {
-          reply(wrapError(error))
+        api.reinitialize { result in
+          switch result {
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
         }
       }
     } else {
