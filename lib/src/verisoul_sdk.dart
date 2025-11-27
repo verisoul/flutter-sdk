@@ -5,7 +5,7 @@ import 'package:verisoul_sdk/src/models/verisoul_account.dart';
 import 'package:verisoul_sdk/src/web/verisoul_sdk_plugin_web.dart'
     if (dart.library.io) 'package:verisoul_sdk/src/verisoul_sdk_plugin.dart';
 
-enum VerisoulEnvironment { dev, prod, sandbox, staging }
+enum VerisoulEnvironment { dev, prod, sandbox }
 
 /// These actions are used to handle gesture events in a pan responder.
 enum MotionAction {

@@ -24,8 +24,6 @@ VerisoulEnvironment getEnvironment(String env) {
       return VerisoulEnvironment.prod;
     case 'sandbox':
       return VerisoulEnvironment.sandbox;
-    case 'staging':
-      return VerisoulEnvironment.staging;
     case 'dev':
     default:
       return VerisoulEnvironment.dev;

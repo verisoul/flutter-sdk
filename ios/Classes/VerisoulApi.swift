@@ -39,8 +39,7 @@ class VerisoulApi : VerisoulApiHostApi{
     static let sdkLogLevels: [Int64: VerisoulSDK.VerisoulEnvironment] = [
        0: .dev,
        1: .prod,
-       2: .sandbox,
-       3: .staging
+       2: .sandbox
      ]
     
     
