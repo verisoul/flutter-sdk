@@ -1,11 +1,9 @@
-/**
- * Custom exception for Verisoul SDK errors
- * Provides standardized error codes for consistent error handling
- *
- * @param code - The error code [VerisoulErrorCodes]
- * @param message - Human readable error message
- * @param cause - The underlying cause of the exception
- */
+/// Custom exception for Verisoul SDK errors.
+/// Provides standardized error codes for consistent error handling.
+///
+/// [code] - The error code from [VerisoulErrorCodes]
+/// [message] - Human readable error message
+/// [cause] - The underlying cause of the exception
 class VerisoulSdkException implements Exception {
   
   final String code;

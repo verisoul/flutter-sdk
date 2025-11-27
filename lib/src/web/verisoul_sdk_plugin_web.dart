@@ -26,7 +26,10 @@ class VerisoulSdkPlugin extends VerisoulApiHostApi {
     final start = DateTime.now();
     while (!isVerisoulLoaded()) {
       if (DateTime.now().difference(start).inMilliseconds > timeoutMs) {
-        throw VerisoulSdkException();
+        throw VerisoulSdkException(
+          'SDK_LOAD_TIMEOUT',
+          'Verisoul SDK failed to load within ${timeoutMs}ms',
+        );
       }
       await Future.delayed(Duration(milliseconds: 10));
     }
