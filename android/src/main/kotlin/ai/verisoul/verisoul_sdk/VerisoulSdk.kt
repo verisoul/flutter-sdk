@@ -15,9 +15,10 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
 
     // Error codes matching the Flutter SDK constants
     private object ErrorCodes {
+        const val WEBVIEW_UNAVAILABLE = "WEBVIEW_UNAVAILABLE"
+        const val SESSION_UNAVAILABLE = "SESSION_UNAVAILABLE"
         const val INVALID_ENVIRONMENT = "INVALID_ENVIRONMENT"
         const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
-        const val SESSION_UNAVAILABLE = "SESSION_UNAVAILABLE"
     }
 
     private val sdkLogLevels: Map<Int, VerisoulEnvironment> = mapOf(
