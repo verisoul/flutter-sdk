@@ -57,10 +57,10 @@ private open class VerisoulPigeonPigeonCodec : StandardMessageCodec() {
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface VerisoulApiHostApi {
-  fun configure(enviromentVariable: Long, projectId: String)
+  fun configure(enviromentVariable: Long, projectId: String, callback: (Result<Unit>) -> Unit)
   fun onTouchEvent(x: Double, y: Double, motionType: Long)
   fun getSessionId(callback: (Result<String>) -> Unit)
-  fun reinitialize()
+  fun reinitialize(callback: (Result<Unit>) -> Unit)
   fun setAccountData(account: Map<String, Any?>)
 
   companion object {
@@ -79,13 +79,14 @@ interface VerisoulApiHostApi {
             val args = message as List<Any?>
             val enviromentVariableArg = args[0] as Long
             val projectIdArg = args[1] as String
-            val wrapped: List<Any?> = try {
-              api.configure(enviromentVariableArg, projectIdArg)
-              listOf(null)
-            } catch (exception: Throwable) {
-              wrapError(exception)
+            api.configure(enviromentVariableArg, projectIdArg) { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                reply.reply(wrapResult(null))
+              }
             }
-            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)
@@ -133,13 +134,14 @@ interface VerisoulApiHostApi {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.verisoul_sdk.VerisoulApiHostApi.reinitialize$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            val wrapped: List<Any?> = try {
-              api.reinitialize()
-              listOf(null)
-            } catch (exception: Throwable) {
-              wrapError(exception)
+            api.reinitialize { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                reply.reply(wrapResult(null))
+              }
             }
-            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)

@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart';
+import 'package:verisoul_sdk/src/errors/verisoul_sdk_init_exception.dart';
 import 'package:verisoul_sdk/src/models/verisoul_account.dart';
 import 'package:verisoul_sdk/src/web/verisoul_sdk_plugin_web.dart'
     if (dart.library.io) 'package:verisoul_sdk/src/verisoul_sdk_plugin.dart';
 
-enum VerisoulEnvironment { dev, prod, sandbox, staging }
+enum VerisoulEnvironment { dev, prod, sandbox }
 
 /// These actions are used to handle gesture events in a pan responder.
 enum MotionAction {
@@ -22,9 +24,20 @@ class VerisoulSdk {
 
   /// Retrieves the current session ID for the active SDK session.
   ///
-  /// Returns a [Future] that resolves to the session ID as a [String], or
-  /// `null` if the session ID could not be retrieved.
-  static Future<String?> getSessionApi() => _host.getSessionId();
+  /// Returns a [Future] that resolves to the session ID as a [String].
+  ///
+  /// Throws [VerisoulSdkException] if the session ID cannot be retrieved.
+  static Future<String?> getSessionApi() async {
+    try {
+      return await _host.getSessionId();
+    } on PlatformException catch (e) {
+      throw VerisoulSdkException(
+        e.code,
+        e.message ?? 'Failed to retrieve session ID',
+        cause: e,
+      );
+    }
+  }
 
   /// Initializes and configures the Verisoul SDK.
   ///
@@ -34,11 +47,22 @@ class VerisoulSdk {
   /// Defaults to [VerisoulEnvironment.dev].
   ///
   /// [projectId] is a required string that uniquely identifies the project.
+  ///
+  /// Throws [VerisoulSdkException] if configuration fails
   static Future<void> configure({
     VerisoulEnvironment environment = VerisoulEnvironment.dev,
     required String projectId,
-  }) =>
-      _host.configure(environment.index, projectId);
+  }) async {
+    try {
+      await _host.configure(environment.index, projectId);
+    } on PlatformException catch (e) {
+      throw VerisoulSdkException(
+        e.code,
+        e.message ?? 'Failed to configure Verisoul SDK',
+        cause: e,
+      );
+    }
+  }
 
   /// Sends a touch event to the SDK.
   ///
@@ -76,5 +100,17 @@ class VerisoulSdk {
   /// Reinitializes the Verisoul SDK.
   ///
   /// Useful if configuration has changed or a fresh session is required.
-  static Future<void> reinitialize() => _host.reinitialize();
+  ///
+  /// Throws [VerisoulSdkException] if reinitialization fails
+  static Future<void> reinitialize() async {
+    try {
+      await _host.reinitialize();
+    } on PlatformException catch (e) {
+      throw VerisoulSdkException(
+        e.code,
+        e.message ?? 'Failed to reinitialize Verisoul SDK',
+        cause: e,
+      );
+    }
+  }
 }
