@@ -5,8 +5,6 @@ import ai.verisoul.sdk.VerisoulEnvironment
 import ai.verisoul.sdk.helpers.webview.VerisoulSessionCallback
 import ai.verisoul.verisoul_sdk.generated.VerisoulApiHostApi
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.view.MotionEvent
 
 class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
@@ -26,19 +24,15 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
         )
 
 
-    private val mainHandler = Handler(Looper.getMainLooper())
-
     override fun configure(enviroment: Long, projectId: String) {
-        mainHandler.post {
-            try {
-                val logLevel = sdkLogLevels[enviroment.toInt()]
-                    ?: throw IllegalArgumentException("Invalid environment: $enviroment")
+        try {
+            val logLevel = sdkLogLevels[enviroment.toInt()]
+                ?: throw IllegalArgumentException("Invalid environment: $enviroment")
 
-                Verisoul.init(context, logLevel, projectId)
+            Verisoul.init(context, logLevel, projectId)
 
-            } catch (e: Exception) {
-                e.printStackTrace();
-            }
+        } catch (e: Exception) {
+            e.printStackTrace();
         }
     }
 
@@ -60,32 +54,27 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
     }
 
     override fun getSessionId(callback: (Result<String>) -> Unit) {
-        mainHandler.post {
-            try {
-                Verisoul.getSessionId(object : VerisoulSessionCallback {
-                    override fun onFailure(exception: Throwable) {
-                        callback.invoke(Result.failure(exception))
-                    }
+        try {
+            Verisoul.getSessionId(object : VerisoulSessionCallback {
+                override fun onFailure(exception: Throwable) {
+                    callback.invoke(Result.failure(exception))
+                }
 
-                    override fun onSuccess(sessionId: String) {
-                        callback.invoke(Result.success(sessionId))
-                    }
-                })
-            } catch (e: Throwable) {
-                callback.invoke(Result.failure(e))
-            }
+                override fun onSuccess(sessionId: String) {
+                    callback.invoke(Result.success(sessionId))
+                }
+            })
+        } catch (e: Throwable) {
+            callback.invoke(Result.failure(e))
         }
     }
 
     override fun reinitialize() {
-        mainHandler.post {
-            try {
-                Verisoul.reinitialize()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        try {
+            Verisoul.reinitialize()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
     }
 
     override fun setAccountData(account: Map<String, Any?>) {
