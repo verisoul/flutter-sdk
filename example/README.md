@@ -16,18 +16,27 @@ This example app demonstrates how to integrate the Verisoul SDK into a Flutter a
 
 Before running the sample app, you need to configure it with your Verisoul credentials.
 
-1. Open `lib/main.dart` in your text editor
+1. Copy the example environment file to create your own:
 
-2. Locate the Verisoul configuration section and add your credentials:
-
-```dart
-VerisoulSdk.configure(
-  projectId: "YOUR_PROJECT_ID", // Replace with your actual project ID
-  environment: VerisoulEnvironment.sandbox // Change to .prod for production
-);
+```sh
+cp .env.example .env
 ```
 
-3. If you don't have a Verisoul Project ID, schedule a call [here](https://meetings.hubspot.com/henry-legard) to get started.
+2. Open `.env` in your text editor and add your credentials:
+
+```
+PROJECT_ID=your_project_id_here
+ENVIRONMENT=sandbox
+API_KEY=your_api_key_here
+```
+
+| Variable | Description |
+|----------|-------------|
+| `PROJECT_ID` | Your Verisoul project ID |
+| `ENVIRONMENT` | `sandbox` or `prod` |
+| `API_KEY` | Your Verisoul API key (used for the authenticate endpoint) |
+
+3. If you don't have Verisoul credentials, schedule a call [here](https://meetings.hubspot.com/henry-legard) to get started.
 
 ## Get Started
 
@@ -138,9 +147,3 @@ For more detailed logs:
 ```sh
 flutter run --verbose
 ```
-
-## Learn More
-
-- [Verisoul Documentation](https://docs.verisoul.ai/)
-- [Flutter Documentation](https://docs.flutter.dev/)
-- [Verisoul Flutter SDK on Pub.dev](https://pub.dev/packages/verisoul_sdk)
