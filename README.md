@@ -10,9 +10,9 @@
 
 Verisoul provides a Flutter SDK that allows you to implement fraud prevention in your cross-platform mobile applications. This guide covers the installation, configuration, and usage of the Verisoul Flutter SDK.
 
-_To run the app a Verisoul Project ID is required._ Schedule a call [here](https://meetings.hubspot.com/henry-legard) to get started.
+_To run the SDK a Verisoul Project ID is required._ Schedule a call [here](https://meetings.hubspot.com/henry-legard) to get started.
 
-## Requirements
+## System Requirements
 
 - Flutter SDK 3.0 or higher
 - Dart 2.17 or higher
@@ -30,7 +30,7 @@ dependencies:
     sdk: flutter
   #  ...
 
-  verisoul_sdk: 0.4.4
+  verisoul_sdk: 0.4.61
 ```
 
 ### Android Configuration
@@ -63,7 +63,7 @@ allprojects {
 
 ### iOS Configuration
 
-For iOS-specific configuration including Device Check and App Attest setup, please refer to the [iOS SDK Documentation](https://docs.verisoul.ai/integration/frontend/ios#ios-device-check).
+For iOS-specific configuration including Device Check and App Attest setup, please refer to the [iOS SDK Documentation](/integration/frontend/ios#ios-device-check).
 
 ## Usage
 
@@ -85,8 +85,8 @@ The `configure()` method initializes the Verisoul SDK with your project credenti
 
 **Parameters:**
 
-- `projectId` (String): Your unique Verisoul project identifier
-- `environment` (VerisoulEnvironment): The environment to use - `VerisoulEnvironment.prod` for production or `VerisoulEnvironment.sandbox` for testing
+- `projectId`: Your unique Verisoul project identifier
+- `environment`: The environment to use `VerisoulEnvironment.prod` for production or `VerisoulEnvironment.sandbox` for testing
 
 ### Get Session ID
 
@@ -122,10 +122,6 @@ Wrap your App with `VerisoulWrapper` to automatically capture touch events:
 runApp(VerisoulWrapper(child: const MyApp()));
 ```
 
-## Example
-
-For a complete working example, see the [example folder](https://github.com/verisoul/flutter-sdk/tree/main/example) in this repository.
-
 ## Web Support
 
 ### Add Verisoul Script
@@ -142,8 +138,8 @@ Add the Verisoul script to your `web/index.html`:
 
 **Replace the following parameters:**
 
-- **{env}**: Use either `prod` or `sandbox`
-- **{project_id}**: Your project ID, which must match the environment
+- **`{env}`**: Use either `prod` or `sandbox`
+- **`{project_id}`**: Your project ID, which must match the environment
 
 ### Content Security Policy (CSP)
 
@@ -172,9 +168,9 @@ await VerisoulSdk.setAccountData(
 );
 ```
 
-## Additional Resources
+## Example
 
-- [Verisoul Documentation](https://docs.verisoul.ai/)
-- [Flutter Documentation](https://docs.flutter.dev/)
-- [Verisoul Flutter SDK on Pub.dev](https://pub.dev/packages/verisoul_sdk)
-- For questions or feedback, reach out at [help@verisoul.ai](mailto:help@verisoul.ai)
+For a complete working example, see the [example folder](https://github.com/verisoul/flutter-sdk/tree/main/example) in this repository.
+
+## Additional Resources
+- [Verisoul Flutter SDK](https://pub.dev/packages/verisoul_sdk)
