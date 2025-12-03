@@ -59,14 +59,19 @@ android {
     dependencies {
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
+
+        // Native Android SDK used by the plugin
         api "ai.verisoul:android:0.4.61"
+
+        // Unit test dependencies for deadlock demonstration tests
+        testImplementation("junit:junit:4.13.2")
+        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     }
 
     testOptions {
         unitTests.all {
-            useJUnitPlatform()
-
             testLogging {
                events "passed", "skipped", "failed", "standardOut", "standardError"
                outputs.upToDateWhen {false}
