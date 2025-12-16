@@ -122,6 +122,27 @@ Wrap your App with `VerisoulWrapper` to automatically capture touch events:
 runApp(VerisoulWrapper(child: const MyApp()));
 ```
 
+### Error Codes
+
+The SDK throws `VerisoulException` with the following error codes:
+
+| Error Code | Description | Recommended Action |
+| ---------- | ----------- | ------------------ |
+| INVALID_ENVIRONMENT | The environment parameter passed to `Verisoul.configure()` is invalid. Valid values are "dev", "sandbox", or "prod". | Ensure `Verisoul.configure()` parameter is exactly:<br>• "dev", "sandbox", or "prod"<br>• Case-sensitive<br>• Free of whitespace |
+| SESSION_UNAVAILABLE | A valid session ID could not be obtained. This typically occurs when Verisoul's servers are unreachable due to network blocking or a very slow connection. | • Implement exponential backoff.<br>• Prompt user to check network or disable network blocker.<br>• Log to identify blocking issues. |
+| WEBVIEW_UNAVAILABLE | WebView is not available on the device. This can occur when WebView is disabled, missing, uninstalled, or corrupted on the device. | Prompt user to:<br>• Enable WebView in settings<br>• Update Android System WebView<br>• Switch devices |
+
+
+#### Exception Structure
+
+All errors are thrown as `VerisoulException` with the following properties:
+
+| Property | Type       | Description                                             |
+| -------- | ---------- | ------------------------------------------------------- |
+| code     | String     | One of the error codes above                            |
+| message  | String     | Human-readable error description                        |
+| cause    | Throwable? | The underlying exception that caused the error (if any) |
+
 ## Web Support
 
 ### Add Verisoul Script
@@ -173,4 +194,5 @@ await VerisoulSdk.setAccountData(
 For a complete working example, see the [example folder](https://github.com/verisoul/flutter-sdk/tree/main/example) in this repository.
 
 ## Additional Resources
+
 - [Verisoul Flutter SDK](https://pub.dev/packages/verisoul_sdk)
