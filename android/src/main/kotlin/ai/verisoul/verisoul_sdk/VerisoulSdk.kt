@@ -7,8 +7,6 @@ import ai.verisoul.sdk.helpers.webview.VerisoulSessionCallback
 import ai.verisoul.verisoul_sdk.generated.FlutterError
 import ai.verisoul.verisoul_sdk.generated.VerisoulApiHostApi
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.view.MotionEvent
 
 class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
@@ -33,33 +31,37 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
         2 to MotionEvent.ACTION_MOVE,
     )
 
-    private val mainHandler = Handler(Looper.getMainLooper())
-
     override fun configure(enviroment: Long, projectId: String, callback: (Result<Unit>) -> Unit) {
-        mainHandler.post {
-            try {
-                val logLevel = sdkLogLevels[enviroment.toInt()]
-                if (logLevel == null) {
-                    callback.invoke(Result.failure(FlutterError(
-                        ErrorCodes.INVALID_ENVIRONMENT,
-                        "Invalid environment: $enviroment",
-                        null
-                    )))
-                    return@post
-                }
-
-                Verisoul.init(context, logLevel, projectId)
-                callback.invoke(Result.success(Unit))
-
-            } catch (e: VerisoulException) {
-                callback.invoke(Result.failure(FlutterError(e.code, e.message, null)))
-            } catch (e: Exception) {
-                callback.invoke(Result.failure(FlutterError(
-                    ErrorCodes.UNKNOWN_ERROR,
-                    e.message ?: "Failed to configure Verisoul SDK",
-                    null
-                )))
+        try {
+            val logLevel = sdkLogLevels[enviroment.toInt()]
+            if (logLevel == null) {
+                callback.invoke(
+                    Result.failure(
+                        FlutterError(
+                            ErrorCodes.INVALID_ENVIRONMENT,
+                            "Invalid environment: $enviroment",
+                            null
+                        )
+                    )
+                )
+                return
             }
+
+            Verisoul.init(context, logLevel, projectId)
+            callback.invoke(Result.success(Unit))
+
+        } catch (e: VerisoulException) {
+            callback.invoke(Result.failure(FlutterError(e.code, e.message, null)))
+        } catch (e: Exception) {
+            callback.invoke(
+                Result.failure(
+                    FlutterError(
+                        ErrorCodes.UNKNOWN_ERROR,
+                        e.message ?: "Failed to configure Verisoul SDK",
+                        null
+                    )
+                )
+            )
         }
     }
 
@@ -81,59 +83,76 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
     }
 
     override fun getSessionId(callback: (Result<String>) -> Unit) {
-        mainHandler.post {
-            try {
-                Verisoul.getSessionId(object : VerisoulSessionCallback {
-                    override fun onFailure(exception: Throwable) {
-                        if (exception is VerisoulException) {
-                            callback.invoke(Result.failure(FlutterError(
-                                exception.code,
-                                exception.message,
-                                null
-                            )))
-                        } else {
-                            callback.invoke(Result.failure(FlutterError(
-                                ErrorCodes.SESSION_UNAVAILABLE,
-                                exception.message ?: "Failed to retrieve session ID",
-                                null
-                            )))
-                        }
+        try {
+            Verisoul.getSessionId(object : VerisoulSessionCallback {
+                override fun onFailure(exception: Throwable) {
+                    if (exception is VerisoulException) {
+                        callback.invoke(
+                            Result.failure(
+                                FlutterError(
+                                    exception.code,
+                                    exception.message,
+                                    null
+                                )
+                            )
+                        )
+                    } else {
+                        callback.invoke(
+                            Result.failure(
+                                FlutterError(
+                                    ErrorCodes.SESSION_UNAVAILABLE,
+                                    exception.message ?: "Failed to retrieve session ID",
+                                    null
+                                )
+                            )
+                        )
                     }
+                }
 
-                    override fun onSuccess(sessionId: String) {
-                        callback.invoke(Result.success(sessionId))
-                    }
-                })
-            } catch (e: VerisoulException) {
-                callback.invoke(Result.failure(FlutterError(
-                    e.code,
-                    e.message,
-                    null
-                )))
-            } catch (e: Throwable) {
-                callback.invoke(Result.failure(FlutterError(
-                    ErrorCodes.SESSION_UNAVAILABLE,
-                    e.message ?: "Failed to retrieve session ID",
-                    null
-                )))
-            }
+
+                override fun onSuccess(sessionId: String) {
+                    callback.invoke(Result.success(sessionId))
+                }
+            })
+        } catch (e: VerisoulException) {
+            callback.invoke(
+                Result.failure(
+                    FlutterError(
+                        e.code,
+                        e.message,
+                        null
+                    )
+                )
+            )
+        } catch (e: Throwable) {
+            callback.invoke(
+                Result.failure(
+                    FlutterError(
+                        ErrorCodes.SESSION_UNAVAILABLE,
+                        e.message ?: "Failed to retrieve session ID",
+                        null
+                    )
+                )
+            )
         }
     }
 
     override fun reinitialize(callback: (Result<Unit>) -> Unit) {
-        mainHandler.post {
-            try {
-                Verisoul.reinitialize()
-                callback.invoke(Result.success(Unit))
-            } catch (e: VerisoulException) {
-                callback.invoke(Result.failure(FlutterError(e.code, e.message, null)))
-            } catch (e: Exception) {
-                callback.invoke(Result.failure(FlutterError(
-                    ErrorCodes.UNKNOWN_ERROR,
-                    e.message ?: "Failed to reinitialize Verisoul SDK",
-                    null
-                )))
-            }
+        try {
+            Verisoul.reinitialize()
+            callback.invoke(Result.success(Unit))
+        } catch (e: VerisoulException) {
+            callback.invoke(Result.failure(FlutterError(e.code, e.message, null)))
+        } catch (e: Exception) {
+            callback.invoke(
+                Result.failure(
+                    FlutterError(
+                        ErrorCodes.UNKNOWN_ERROR,
+                        e.message ?: "Failed to reinitialize Verisoul SDK",
+                        null
+                    )
+                )
+            )
         }
     }
 
