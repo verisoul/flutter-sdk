@@ -1,9 +1,7 @@
 package ai.verisoul.verisoul_sdk
 
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
 import kotlin.test.Test
-import org.mockito.Mockito
+import kotlin.test.assertNotNull
 
 /*
  * This demonstrates a simple unit test of the Kotlin portion of this plugin's implementation.
@@ -15,13 +13,9 @@ import org.mockito.Mockito
 
 internal class VerisoulSdkPluginTest {
   @Test
-  fun onMethodCall_getPlatformVersion_returnsExpectedValue() {
-    val plugin = VerisoulSdkPlugin()
-
-    val call = MethodCall("getPlatformVersion", null)
-    val mockResult: MethodChannel.Result = Mockito.mock(MethodChannel.Result::class.java)
-    plugin.onMethodCall(call, mockResult)
-
-    Mockito.verify(mockResult).success("Android " + android.os.Build.VERSION.RELEASE)
+  fun plugin_instantiates() {
+    // The plugin is Pigeon-based (no MethodChannel onMethodCall handler anymore).
+    // This is a minimal smoke test to ensure the class is present and constructible.
+    assertNotNull(VerisoulSdkPlugin())
   }
 }
