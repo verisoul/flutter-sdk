@@ -1,3 +1,10 @@
+## 0.4.62 - 2025-12-16
+* fix: remove mainHandler.post wrapper causing thread conflicts in Android bridges
+* test: add unit test demonstrating mainHandler.post deadlock scenario
+* test: fix android plugin unit test
+* docs: document standardized Verisoul error codes
+* docs: enhance documentation structure
+
 ## 0.4.61 - 2025-11-27
 * chore: update Android SDK to stable version 0.4.61
 * fix: add missing WEBVIEW_UNAVAILABLE error code to Android
