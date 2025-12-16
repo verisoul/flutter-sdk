@@ -126,107 +126,12 @@ runApp(VerisoulWrapper(child: const MyApp()));
 
 The SDK throws `VerisoulException` with the following error codes:
 
-| Error Code          | Value                 | Description                                                                                                                                                | Recommended Action                                                                                                                                                                                                                                                                                                                                    |
-| ------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| INVALID_ENVIRONMENT | "INVALID_ENVIRONMENT" | The environment parameter passed to init() is invalid. Valid values are "dev", "sandbox", or "prod".                                                       | Integration Error. This is a developer configuration issue, not a user error. Verify that the environment string passed to Verisoul.init() is exactly one of: dev, sandbox, or prod. Environment values are case-sensitive. Check for typos, extra whitespace, or incorrect values like "production" or "DEV".                                        |
-| SESSION_UNAVAILABLE | "SESSION_UNAVAILABLE" | A valid session ID could not be obtained. This typically occurs when Verisoul's servers are unreachable due to network blocking or a very slow connection. | Retry with backoff. Verisoul may be blocked by a firewall, VPN, or the user has poor connectivity. Implement retry logic with exponential backoff. If the error persists, prompt the user to check their network connection or try disabling VPN/proxy settings. Consider logging this for debugging network issues in specific regions or networks.  |
-| WEBVIEW_UNAVAILABLE | "WEBVIEW_UNAVAILABLE" | WebView is not available on the device. This can occur when WebView is disabled, missing, uninstalled, or corrupted on the device.                         | Prompt user action. This error is not retried by the SDK since WebView availability won't change during the session. Recommend prompting the user to: (1) Use a device that supports WebViews, (2) Enable WebView if it has been disabled in device settings, or (3) Update Android System WebView from the Play Store if it's outdated or corrupted. |
+| Error Code | Description | Recommended Action |
+| ---------- | ----------- | ------------------ |
+| INVALID_ENVIRONMENT | The environment parameter passed to `Verisoul.configure()` is invalid. Valid values are "dev", "sandbox", or "prod". | Ensure `Verisoul.configure()` parameter is exactly:<br>• "dev", "sandbox", or "prod"<br>• Case-sensitive<br>• Free of whitespace |
+| SESSION_UNAVAILABLE | A valid session ID could not be obtained. This typically occurs when Verisoul's servers are unreachable due to network blocking or a very slow connection. | • Implement exponential backoff.<br>• Prompt user to check network or disable network blocker.<br>• Log to identify blocking issues. |
+| WEBVIEW_UNAVAILABLE | WebView is not available on the device. This can occur when WebView is disabled, missing, uninstalled, or corrupted on the device. | Prompt user to:<br>• Enable WebView in settings<br>• Update Android System WebView<br>• Switch devices |
 
-#### Detailed Error Code Documentation
-
-**INVALID_ENVIRONMENT**
-
-Type: Integration Error (Developer)
-
-When it occurs:
-
-- Passing an invalid string to `VerisoulEnvironment.fromValue()` or equivalent
-- Environment value not matching exactly: `dev`, `sandbox`, or `prod`
-- Case sensitivity issues (e.g., "DEV" instead of "dev")
-- Extra whitespace (e.g., " dev ")
-- Typos (e.g., "production" instead of "prod")
-
-SDK Behavior:
-
-- Exception thrown immediately during initialization
-- No retries attempted
-
-Developer Action:
-
-```dart
-// ✅ Correct
-VerisoulSdk.configure(
-  projectId: "your-project-id",
-  environment: VerisoulEnvironment.prod
-);
-
-// ❌ Incorrect - will throw INVALID_ENVIRONMENT
-// Using incorrect environment strings or values
-```
-
-**SESSION_UNAVAILABLE**
-
-Type: Runtime Error (Network/Connectivity)
-
-When it occurs:
-
-- Network timeout waiting for session
-- Verisoul servers unreachable
-- Network blocking (firewall, corporate proxy, VPN)
-- Very slow network connection
-- All retry attempts exhausted
-
-SDK Behavior:
-
-- SDK automatically retries up to 4 times with delays
-- WebView initialization retries up to 3 times
-- Error thrown only after all retries are exhausted
-
-Developer Action:
-
-```dart
-try {
-  final session = await VerisoulSdk.getSessionApi();
-  // Use session
-} catch (e) {
-  if (e is VerisoulException &&
-      e.code == VerisoulErrorCodes.SESSION_UNAVAILABLE) {
-    // Implement retry with backoff or prompt user about connectivity
-  }
-}
-```
-
-**WEBVIEW_UNAVAILABLE**
-
-Type: Device Limitation Error
-
-When it occurs:
-
-- WebView is disabled on the device
-- WebView component is missing or uninstalled
-- WebView is corrupted or incompatible
-- Device doesn't support WebView (rare, older/custom ROMs)
-
-SDK Behavior:
-
-- No retries - fails immediately
-- This is intentional since WebView availability won't change during the app session
-
-Developer Action:
-
-```dart
-try {
-  final session = await VerisoulSdk.getSessionApi();
-  // Use session
-} catch (e) {
-  if (e is VerisoulException &&
-      e.code == VerisoulErrorCodes.WEBVIEW_UNAVAILABLE) {
-    // Show user-friendly message:
-    // "Please enable WebView in your device settings or
-    //  update Android System WebView from the Play Store"
-  }
-}
-```
 
 #### Exception Structure
 
