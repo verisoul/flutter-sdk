@@ -1,5 +1,7 @@
 package ai.verisoul.verisoul_sdk
 
+import ai.verisoul.sdk.InternalVerisoulCore
+import ai.verisoul.sdk.SDKType
 import ai.verisoul.sdk.Verisoul
 import ai.verisoul.sdk.VerisoulEnvironment
 import ai.verisoul.sdk.VerisoulException
@@ -47,6 +49,7 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
                 return
             }
 
+            InternalVerisoulCore.sdkType = SDKType.Flutter
             Verisoul.init(context, logLevel, projectId)
             callback.invoke(Result.success(Unit))
 

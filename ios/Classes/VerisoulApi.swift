@@ -54,6 +54,7 @@ class VerisoulApi : VerisoulApiHostApi{
         }
 
         do {
+            InternalVerisoulCore.shared.sdkType = .flutter
             Verisoul.shared.configure(env: env, projectId: projectId)
             completion(.success(()))
         } catch let error as NSError {
