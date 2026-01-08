@@ -1,3 +1,11 @@
+## 0.4.63 - 2026-01-08
+* docs: update README install version to 0.4.63
+* chore(example): use ENVIRONMENT + API_KEY for authenticate
+* chore(ios): bump native sdk to 0.4.64
+* chore(android): bump native sdk to 0.4.65
+* chore: automatically set sdk_type to flutter during configure
+
+
 ## 0.4.62 - 2025-12-16
 * fix: remove mainHandler.post wrapper causing thread conflicts in Android bridges
 * test: add unit test demonstrating mainHandler.post deadlock scenario
