@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:verisoul_sdk/verisoul_sdk.dart';
 
@@ -66,10 +67,26 @@ Future<String> _reinitAndGet() async {
 // Call authenticate API
 Future<bool> _callAuthenticate(String sid) async {
   try {
+    final envRaw = (dotenv.env['ENVIRONMENT'] ?? 'prod').trim().toLowerCase();
+    final env = switch (envRaw) {
+      'production' => 'prod',
+      _ => envRaw,
+    };
+
+    final baseUrl = switch (env) {
+      'dev' => 'https://api.dev.verisoul.ai',
+      'sandbox' => 'https://api.sandbox.verisoul.ai',
+      'staging' => 'https://api.staging.verisoul.ai',
+      'prod' => 'https://api.prod.verisoul.ai',
+      _ => 'https://api.prod.verisoul.ai',
+    };
+
+    final apiKey = dotenv.env['API_KEY'] ?? '';
+
     final response = await http.post(
-      Uri.parse('https://api.sandbox.verisoul.ai/session/authenticate'),
+      Uri.parse('$baseUrl/session/authenticate'),
       headers: {
-        'x-api-key': '<API_KEY>',
+        'x-api-key': apiKey,
         'Content-Type': 'application/json',
       },
       body: jsonEncode({

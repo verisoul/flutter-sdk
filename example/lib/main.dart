@@ -165,10 +165,19 @@ class _MyAppState extends State<MyApp> {
   /// Call the authenticate API
   Future<bool> _callAuthenticate(String sessionId) async {
     try {
-      final envString = dotenv.env['ENVIRONMENT'] ?? 'prod';
-      final baseUrl = envString == 'staging'
-          ? 'https://api.staging.verisoul.ai'
-          : 'https://api.prod.verisoul.ai';
+      final envRaw = (dotenv.env['ENVIRONMENT'] ?? 'prod').trim().toLowerCase();
+      final env = switch (envRaw) {
+        'production' => 'prod',
+        _ => envRaw,
+      };
+
+      final baseUrl = switch (env) {
+        'dev' => 'https://api.dev.verisoul.ai',
+        'sandbox' => 'https://api.sandbox.verisoul.ai',
+        'staging' => 'https://api.staging.verisoul.ai',
+        'prod' => 'https://api.prod.verisoul.ai',
+        _ => 'https://api.prod.verisoul.ai',
+      };
       final apiKey = dotenv.env['API_KEY'] ?? '';
 
       final client = HttpClient();
