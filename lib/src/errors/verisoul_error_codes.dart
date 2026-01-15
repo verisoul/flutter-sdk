@@ -10,6 +10,9 @@ class VerisoulErrorCodes {
   /// Invalid environment parameter
   static const String invalidEnvironment = 'INVALID_ENVIRONMENT';
 
+  /// WebView renderer process crashed
+  static const String webviewRendererCrashed = 'WEBVIEW_RENDERER_CRASHED';
+
   /// Unknown error occurred
   static const String unknownError = 'UNKNOWN_ERROR';
 }
