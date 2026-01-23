@@ -131,6 +131,7 @@ The SDK throws `VerisoulException` with the following error codes:
 | INVALID_ENVIRONMENT | The environment parameter passed to `Verisoul.configure()` is invalid. Valid values are "dev", "sandbox", or "prod". | Ensure `Verisoul.configure()` parameter is exactly:<br>• "dev", "sandbox", or "prod"<br>• Case-sensitive<br>• Free of whitespace |
 | SESSION_UNAVAILABLE | A valid session ID could not be obtained. This typically occurs when Verisoul's servers are unreachable due to network blocking or a very slow connection. | • Implement exponential backoff.<br>• Prompt user to check network or disable network blocker.<br>• Log to identify blocking issues. |
 | WEBVIEW_UNAVAILABLE | WebView is not available on the device. This can occur when WebView is disabled, missing, uninstalled, or corrupted on the device. | Prompt user to:<br>• Enable WebView in settings<br>• Update Android System WebView<br>• Switch devices |
+| WEBVIEW_RENDERER_CRASHED | The WebView renderer process crashed, typically due to low memory or resource pressure. | • Retry the request (SDK will attempt recovery).<br>• Encourage users to update Android System WebView.<br>• Switch devices |
 
 
 #### Exception Structure
