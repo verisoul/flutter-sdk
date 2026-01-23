@@ -1,3 +1,9 @@
+## 0.4.64 - 2026-01-23
+* feat: add WEBVIEW_RENDERER_CRASHED error code
+* docs: add renderer crash error code
+* docs: update README install version to 0.4.64
+* chore(android): bump native sdk to 0.4.66
+
 ## 0.4.63 - 2026-01-08
 * docs: update README install version to 0.4.63
 * chore(example): use ENVIRONMENT + API_KEY for authenticate
