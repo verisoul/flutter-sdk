@@ -15,8 +15,8 @@ Verisoul helps businesses stop fake accounts and fraud
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.platform = :ios, '14.0'
-  s.dependency 'VerisoulSDK', '0.4.64'
+  s.platform = :ios, '16.0'
+  s.dependency 'VerisoulSDK', '0.4.65'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
