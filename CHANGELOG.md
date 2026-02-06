@@ -1,3 +1,9 @@
+## 0.4.65 - 2026-02-06
+* docs: update README version to 0.4.65
+* chore(ios): keep minimum target at 14.0
+* chore(ios): bump VerisoulSDK to 0.4.65
+
+
 ## 0.4.64 - 2026-01-23
 * feat: add WEBVIEW_RENDERER_CRASHED error code
 * docs: add renderer crash error code
