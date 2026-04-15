@@ -19,6 +19,7 @@ _To run the SDK a Verisoul Project ID is required._ Schedule a call [here](https
 - iOS 14.0 or higher
 - Android API level 24 (Android 7.0) or higher
 - For Web: Modern browsers with JavaScript enabled
+- SDK Size: ~120 KB (plus native iOS and Android SDK dependencies)
 
 ## Installation
 
