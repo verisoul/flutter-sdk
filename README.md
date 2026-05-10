@@ -105,16 +105,6 @@ The `getSessionApi()` method returns the current session identifier after the SD
 final session = await VerisoulSdk.getSessionApi();
 ```
 
-### Reinitialize Session
-
-The `reinitialize()` method generates a fresh session ID and resets the SDK's data collection. This is essential for maintaining data integrity when user context changes.
-
-**Example:**
-
-```dart
-await VerisoulSdk.reinitialize();
-```
-
 ### Provide Touch Events
 
 Wrap your App with `VerisoulWrapper` to automatically capture touch events:
