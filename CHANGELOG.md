@@ -1,3 +1,10 @@
+## 0.4.66 - 2026-06-25
+* Update verisoul/native-ios-sdk to version 0.4.68
+* Update verisoul/native-android-sdk to version 0.4.69
+* docs: remove reinitialize() from README
+* Add SDK size to System Requirements in README
+
+
 ## 0.4.65 - 2026-02-06
 * docs: update README version to 0.4.65
 * chore(ios): keep minimum target at 14.0
