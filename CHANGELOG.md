@@ -1,3 +1,7 @@
+## 0.4.67 - 2026-06-26
+* Update verisoul/native-android-sdk to version 0.4.70 (clear cached session on project/environment change)
+* Update verisoul/native-ios-sdk to version 0.4.69
+
 ## 0.4.66 - 2026-06-25
 * Update verisoul/native-ios-sdk to version 0.4.68
 * Update verisoul/native-android-sdk to version 0.4.69
