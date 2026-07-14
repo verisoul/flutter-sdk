@@ -1,3 +1,6 @@
+## 0.4.69 - 2026-07-14
+* Update verisoul/native-android-sdk to version 0.4.71 (recover from corrupted DataStore preferences file that made getSessionId() fail permanently with SESSION_UNAVAILABLE on affected devices)
+
 ## 0.4.68 - 2026-07-14
 * docs: recommend calling configure() before you intend to retrieve a session_id (only initialize if you plan to call the Verisoul API)
 
