@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   #  ...
 
-  verisoul_sdk: 0.4.67
+  verisoul_sdk: 0.4.68
 ```
 
 ### Android Configuration
@@ -70,7 +70,7 @@ For iOS-specific configuration including Device Check and App Attest setup, plea
 
 ### Initialize the SDK
 
-Call `configure()` when your application starts, before running your app:
+Call `configure()` before you intend to retrieve a Verisoul session_id:
 
 ```dart
 import 'package:verisoul_sdk/verisoul.dart';
@@ -82,7 +82,7 @@ void main() {
 }
 ```
 
-The `configure()` method initializes the Verisoul SDK with your project credentials. This method must be called once when your application starts.
+The `configure()` method initializes the Verisoul SDK with your project credentials. Only initialize the SDK if you plan to retrieve a session_id and call the Verisoul API for that session.
 
 **Parameters:**
 
