@@ -1,3 +1,6 @@
+## 0.4.68 - 2026-07-14
+* docs: recommend calling configure() before you intend to retrieve a session_id (only initialize if you plan to call the Verisoul API)
+
 ## 0.4.67 - 2026-06-26
 * Update verisoul/native-android-sdk to version 0.4.70 (clear cached session on project/environment change)
 * Update verisoul/native-ios-sdk to version 0.4.69
