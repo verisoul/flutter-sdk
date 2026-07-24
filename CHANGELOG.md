@@ -1,3 +1,6 @@
+## 0.4.70 - 2026-07-23
+* Update verisoul/native-android-sdk to version 0.4.72 (collect GPU renderer, CPU core count, and total device RAM in the deviceData telemetry payload)
+
 ## 0.4.69 - 2026-07-14
 * Update verisoul/native-android-sdk to version 0.4.71 (recover from corrupted DataStore preferences file that made getSessionId() fail permanently with SESSION_UNAVAILABLE on affected devices)
 
