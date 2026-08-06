@@ -38,7 +38,7 @@ steps:
         export PUB_TOKEN=$(curl -s -X POST \
           -H "Authorization: Bearer $${ACCESS_TOKEN}" \
           -H "Content-Type: application/json" \
-          -d '{"audience":"https://pub.dev"}' \
+          -d '{"audience":"https://pub.dev","includeEmail":true}' \
           "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/pub-publisher@verisoul.iam.gserviceaccount.com:generateIdToken" \
           | sed -n 's/.*"token" *: *"\([^"]*\)".*/\1/p')
         if [ -z "$${PUB_TOKEN}" ]; then
