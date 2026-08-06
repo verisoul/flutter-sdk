@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/verisoul/ios-sdk.git",
+      "state" : {
+        "revision" : "9e5d18e8030f9f4a1f6b6b6388023baa6d6c5fb0",
+        "version" : "0.4.70"
+      }
+    }
+  ],
+  "version" : 2
+}
