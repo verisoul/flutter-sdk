@@ -1,3 +1,8 @@
+## 0.4.71 - 2026-08-06
+* Add Swift Package Manager support for iOS (required opt-in from Flutter 3.24, default from Flutter 3.44). CocoaPods remains fully supported.
+* Update verisoul/native-android-sdk to version 0.4.73 (collect carrier identity fields — networkOperatorName, simOperatorName, and numeric MCC+MNC operator codes — without requiring the READ_PHONE_STATE permission)
+* Update verisoul/native-ios-sdk pin to version 0.4.70 (was 0.4.69)
+
 ## 0.4.70 - 2026-07-23
 * Update verisoul/native-android-sdk to version 0.4.72 (collect GPU renderer, CPU core count, and total device RAM in the deviceData telemetry payload)
 

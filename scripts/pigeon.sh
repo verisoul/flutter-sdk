@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIR_DART="lib/src/generated"
-DIR_IOS="ios/Classes/Generated"
+DIR_IOS="ios/verisoul_sdk/Sources/verisoul_sdk/Generated"
 DIR_ANDROID="android/src/main/kotlin/ai/verisoul/verisoul_sdk/generated"
 PKG_ANDROID="ai.verisoul.verisoul_sdk.generated"
 
