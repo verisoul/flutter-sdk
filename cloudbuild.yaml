@@ -1,0 +1,63 @@
+# Cloud Build release pipeline: validates and publishes the package to pub.dev.
+# Publishing uses pub.dev's Google Cloud service-account support: the build's
+# service account identity token is exchanged for a pub.dev token, so no
+# long-lived credentials exist anywhere.
+#
+# Manual (GitHub-independent) release from a local checkout of the tag:
+#   gcloud builds submit --project=verisoul --config=cloudbuild.yaml \
+#     --substitutions=_VERSION=X.Y.Z .
+#
+# Dry-run validation (no publish; overrides the default --force):
+#   gcloud builds submit --project=verisoul --config=cloudbuild.yaml \
+#     --substitutions=_VERSION=X.Y.Z,_PUBLISH_ARGS=--dry-run .
+steps:
+  - name: ghcr.io/cirruslabs/flutter:stable
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        # Tag triggers pass the raw tag name (e.g. v0.4.71); strip the leading v.
+        VERSION="$(echo "${_VERSION}" | sed 's/^v//')"
+        echo "=== Publishing version $${VERSION} ==="
+
+        PUB_VERSION=$(sed -n 's/^version: //p' pubspec.yaml | tr -d ' ')
+        if [ "$${PUB_VERSION}" != "$${VERSION}" ]; then
+          echo "Error: pubspec.yaml version ($${PUB_VERSION}) must match tag version ($${VERSION})"
+          exit 1
+        fi
+
+        flutter pub get
+
+        # Mint an ID token for pub.dev via the IAM Credentials API (the Cloud
+        # Build metadata server does not serve identity tokens directly). The
+        # service account has token-creator permission on itself.
+        ACCESS_TOKEN=$(curl -s -H "Metadata-Flavor: Google" \
+          "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" \
+          | sed -n 's/.*"access_token" *: *"\([^"]*\)".*/\1/p')
+        export PUB_TOKEN=$(curl -s -X POST \
+          -H "Authorization: Bearer $${ACCESS_TOKEN}" \
+          -H "Content-Type: application/json" \
+          -d '{"audience":"https://pub.dev"}' \
+          "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/pub-publisher@verisoul.iam.gserviceaccount.com:generateIdToken" \
+          | sed -n 's/.*"token" *: *"\([^"]*\)".*/\1/p')
+        if [ -z "$${PUB_TOKEN}" ]; then
+          echo "Error: failed to mint pub.dev identity token"
+          exit 1
+        fi
+        dart pub token add https://pub.dev --env-var PUB_TOKEN
+
+        flutter pub publish ${_PUBLISH_ARGS}
+        echo "=== Published verisoul_sdk $${VERSION} to pub.dev ==="
+
+substitutions:
+  _VERSION: "0.0.0"
+  _PUBLISH_ARGS: "--force"
+
+serviceAccount: projects/verisoul/serviceAccounts/pub-publisher@verisoul.iam.gserviceaccount.com
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+
+timeout: 1800s

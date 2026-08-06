@@ -1,9 +1,9 @@
 name: Publish to pub.dev
 
+# DISABLED: releases are published via Google Cloud Build (see cloudbuild.yaml).
+# Tag-push triggering is turned off; manual dispatch is kept as a fallback.
 on:
-  push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+*"
+  workflow_dispatch:
 
 jobs:
   publish:
