@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "verisoul-sdk", targets: ["verisoul_sdk"])
     ],
     dependencies: [
-        .package(url: "https://github.com/verisoul/ios-sdk.git", exact: "0.4.70"),
+        .package(url: "https://github.com/verisoul/ios-sdk.git", exact: "0.4.72"),
         .package(name: "FlutterFramework", path: "../FlutterFramework")
     ],
     targets: [

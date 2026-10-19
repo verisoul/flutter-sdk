@@ -1,3 +1,6 @@
+## 0.4.73 - 2026-10-19
+* Update verisoul/native-ios-sdk pin to version 0.4.72 (was 0.4.70): getSessionId() on iOS now recovers after a data collection pass fails or times out, where before every later call waited 20 seconds and failed with SESSION_UNAVAILABLE until configure() ran again
+
 ## 0.4.72 - 2026-08-06
 * Update verisoul/native-android-sdk to version 0.4.74 (collect permission-free SIM country fields — simCountryIso and networkCountryIso — in the networkData payload)
 
