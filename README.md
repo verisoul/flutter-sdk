@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   #  ...
 
-  verisoul_sdk: 0.4.73
+  verisoul_sdk: 0.4.74
 ```
 
 ### Android Configuration
@@ -104,6 +104,8 @@ The `getSessionApi()` method returns the current session identifier after the SD
 ```dart
 final session = await VerisoulSdk.getSessionApi();
 ```
+
+On iOS, the SDK collects data only while the app is in the foreground. If `getSessionApi()` is called while the app is in the background (for example during a silent push, background fetch, or location update), it returns once the user opens the app. A cached session is returned right away, and the timeout counts only time spent in the foreground. Don't await `getSessionApi()` inside background handlers or in other code that has to finish while the app is in the background.
 
 ### Provide Touch Events
 

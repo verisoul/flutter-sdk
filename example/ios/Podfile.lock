@@ -2,8 +2,8 @@ PODS:
   - Flutter (1.0.0)
   - verisoul_sdk (0.0.1):
     - Flutter
-    - VerisoulSDK (= 0.4.72)
-  - VerisoulSDK (0.4.72)
+    - VerisoulSDK (= 0.4.73)
+  - VerisoulSDK (0.4.73)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -21,8 +21,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  verisoul_sdk: 850d8cedcb7196e297c35adc9093ac6359963b2a
-  VerisoulSDK: 57a151a983eaef2c93574a87fbf0da5a4ecf9189
+  verisoul_sdk: 7bfccdecf6f7363d6bc325fec25d29a45ac93f00
+  VerisoulSDK: e69e6706c04f56e93e609f93df313c2a64e88c2e
 
 PODFILE CHECKSUM: 1959d098c91d8a792531a723c4a9d7e9f6a01e38
 

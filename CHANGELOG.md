@@ -1,3 +1,6 @@
+## 0.4.74 - 2026-10-19
+* Update verisoul/native-ios-sdk pin to version 0.4.73 (was 0.4.72): on iOS the SDK collects data only while the app is in the foreground. A getSessionApi() call made while iOS has the app in the background (silent push, background fetch) now returns once the user opens the app, and its timeout counts only foreground time, where before it failed with "Data collection timed out" as soon as the app was opened. Don't await getSessionApi() inside background handlers.
+
 ## 0.4.73 - 2026-10-19
 * Update verisoul/native-ios-sdk pin to version 0.4.72 (was 0.4.70): getSessionId() on iOS now recovers after a data collection pass fails or times out, where before every later call waited 20 seconds and failed with SESSION_UNAVAILABLE until configure() ran again
 
