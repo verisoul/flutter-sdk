@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/verisoul/ios-sdk.git",
       "state" : {
-        "revision" : "02e0b3efb332dcf202eb8f63f6efda6b2b01a172",
-        "version" : "0.4.72"
+        "revision" : "fa60043c50f808f54d52bfa29edb31227fa4e30c",
+        "version" : "0.4.73"
       }
     }
   ],
