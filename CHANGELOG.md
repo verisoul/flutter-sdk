@@ -1,3 +1,6 @@
+## 0.4.75 - 2026-11-06
+* Update verisoul/native-ios-sdk pin to version 0.4.74 (was 0.4.73). Fixes a crash in touch and motion capture (SIGSEGV in FraudDetection.stop(), or "NSConcreteHashTable was mutated while being enumerated") that could happen when capture stopped on several threads at once. Also fixes getSessionApi() failing with "Data collection failed" on slow networks: the SDK used to cancel the collection page load after 3 seconds and count the cancel as a retry, and each attempt now gets 8 seconds.
+
 ## 0.4.74 - 2026-10-19
 * Update verisoul/native-ios-sdk pin to version 0.4.73 (was 0.4.72): on iOS the SDK collects data only while the app is in the foreground. A getSessionApi() call made while iOS has the app in the background (silent push, background fetch) now returns once the user opens the app, and its timeout counts only foreground time, where before it failed with "Data collection timed out" as soon as the app was opened. Don't await getSessionApi() inside background handlers.
 

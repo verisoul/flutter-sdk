@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   #  ...
 
-  verisoul_sdk: 0.4.74
+  verisoul_sdk: 0.4.75
 ```
 
 ### Android Configuration
