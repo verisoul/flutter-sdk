@@ -33,7 +33,7 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
         2 to MotionEvent.ACTION_MOVE,
     )
 
-    override fun configure(enviroment: Long, projectId: String, callback: (Result<Unit>) -> Unit) {
+    override fun configure(enviroment: Long, projectId: String, customHostname: String?, callback: (Result<Unit>) -> Unit) {
         try {
             val logLevel = sdkLogLevels[enviroment.toInt()]
             if (logLevel == null) {
@@ -50,7 +50,12 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
             }
 
             InternalVerisoulCore.sdkType = SDKType.Flutter
-            Verisoul.init(context, logLevel, projectId)
+            if (customHostname != null) {
+                // Loads the SDK WebView from the custom hostname, with no fallback to the Verisoul host.
+                Verisoul.init(context, logLevel, projectId, false, customHostname)
+            } else {
+                Verisoul.init(context, logLevel, projectId)
+            }
             callback.invoke(Result.success(Unit))
 
         } catch (e: VerisoulException) {

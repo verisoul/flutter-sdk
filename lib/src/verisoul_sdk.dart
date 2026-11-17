@@ -48,13 +48,20 @@ class VerisoulSdk {
   ///
   /// [projectId] is a required string that uniquely identifies the project.
   ///
+  /// [customHostname] is optional. Set it to a custom hostname configured for
+  /// your Verisoul project (for example `js.example.com`) to load the SDK from
+  /// that hostname on Android and iOS. Pass the hostname only, with no scheme,
+  /// port or path. When set, the SDK always uses it and does not fall back to
+  /// the Verisoul host. It has no effect on web.
+  ///
   /// Throws [VerisoulSdkException] if configuration fails
   static Future<void> configure({
     VerisoulEnvironment environment = VerisoulEnvironment.dev,
     required String projectId,
+    String? customHostname,
   }) async {
     try {
-      await _host.configure(environment.index, projectId);
+      await _host.configure(environment.index, projectId, customHostname);
     } on PlatformException catch (e) {
       throw VerisoulSdkException(
         e.code,
