@@ -1,3 +1,7 @@
+## 0.4.76 - 2026-11-16
+* Add an optional `customHostname` to `VerisoulSdk.configure()`. On Android and iOS the SDK loads from the custom hostname set up for your Verisoul project (for example `js.example.com`) in place of the Verisoul host. Pass the hostname only, with no scheme, port or path. When set, the SDK always uses it and does not fall back to the Verisoul host; if the hostname is invalid or is not active for the project, the session call fails with `SESSION_UNAVAILABLE`. Existing calls to `configure()` are unchanged.
+* Update `ai.verisoul:android` to 0.4.75 (was 0.4.74) and the verisoul/native-ios-sdk pin to 0.4.75 (was 0.4.74).
+
 ## 0.4.75 - 2026-11-06
 * Update verisoul/native-ios-sdk pin to version 0.4.74 (was 0.4.73). Fixes a crash in touch and motion capture (SIGSEGV in FraudDetection.stop(), or "NSConcreteHashTable was mutated while being enumerated") that could happen when capture stopped on several threads at once. Also fixes getSessionApi() failing with "Data collection failed" on slow networks: the SDK used to cancel the collection page load after 3 seconds and count the cancel as a retry, and each attempt now gets 8 seconds.
 

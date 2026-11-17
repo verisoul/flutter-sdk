@@ -43,7 +43,7 @@ class VerisoulApi : VerisoulApiHostApi{
      ]
     
     
-    func configure(enviromentVariable: Int64, projectId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func configure(enviromentVariable: Int64, projectId: String, customHostname: String?, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let env = VerisoulApi.sdkLogLevels[enviromentVariable] else {
             completion(.failure(PigeonError(
                 code: ErrorCodes.INVALID_ENVIRONMENT,
@@ -55,7 +55,12 @@ class VerisoulApi : VerisoulApiHostApi{
 
         do {
             InternalVerisoulCore.shared.sdkType = .flutter
-            Verisoul.shared.configure(env: env, projectId: projectId)
+            if let customHostname {
+                // Loads the SDK WebView from the custom hostname, with no fallback to the Verisoul host.
+                Verisoul.shared.configure(env: env, projectId: projectId, customHostname: customHostname)
+            } else {
+                Verisoul.shared.configure(env: env, projectId: projectId)
+            }
             completion(.success(()))
         } catch let error as NSError {
             let errorCode = error.userInfo["errorCode"] as? String ?? ErrorCodes.UNKNOWN_ERROR

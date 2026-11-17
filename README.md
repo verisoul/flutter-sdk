@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   #  ...
 
-  verisoul_sdk: 0.4.75
+  verisoul_sdk: 0.4.76
 ```
 
 ### Android Configuration
@@ -88,6 +88,23 @@ The `configure()` method initializes the Verisoul SDK with your project credenti
 
 - `projectId`: Your unique Verisoul project identifier
 - `environment`: The environment to use `VerisoulEnvironment.prod` for production or `VerisoulEnvironment.sandbox` for testing
+- `customHostname`: Optional. A custom hostname to load the SDK from. See [Custom hostname](#custom-hostname)
+
+### Custom hostname
+
+Available from version 0.4.76, on Android and iOS. If you have set up a [custom hostname](https://docs.verisoul.ai/integration/custom-hostname) for your project, pass it to `configure()` and the SDK loads from your hostname.
+
+```dart
+VerisoulSdk.configure(
+  projectId: "Project ID",
+  environment: VerisoulEnvironment.prod,
+  customHostname: "js.example.com",
+);
+```
+
+- Pass the hostname only, with no `https://`, port or path.
+- Use the hostname for the environment. With `VerisoulEnvironment.sandbox`, pass the sandbox hostname, such as `sandbox.js.example.com`.
+- When a custom hostname is set, the SDK always uses it. If the hostname is invalid or is not active for your project, `getSessionApi()` fails with `SESSION_UNAVAILABLE`.
 
 ### Get Session ID
 
