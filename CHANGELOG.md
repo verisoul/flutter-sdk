@@ -1,3 +1,7 @@
+## 0.4.77 - 2026-11-17
+* Fix touch forwarding on Android. Touches sent through `VerisoulWrapper` or `VerisoulSdk.touchEvent()` are now recorded at the press (they were recorded at the lift), carry the correct time, and use screen coordinates in physical pixels. `VerisoulSdk.touchEvent()` still takes logical pixels.
+* `VerisoulWrapper` now forwards the press only. Move and lift events stay in Dart, which removes a platform channel call for every pointer move.
+
 ## 0.4.76 - 2026-11-16
 * Add an optional `customHostname` to `VerisoulSdk.configure()`. On Android and iOS the SDK loads from the custom hostname set up for your Verisoul project (for example `js.example.com`) in place of the Verisoul host. Pass the hostname only, with no scheme, port or path. When set, the SDK always uses it and does not fall back to the Verisoul host; if the hostname is invalid or is not active for the project, the session call fails with `SESSION_UNAVAILABLE`. Existing calls to `configure()` are unchanged.
 * Update `ai.verisoul:android` to 0.4.75 (was 0.4.74) and the verisoul/native-ios-sdk pin to 0.4.75 (was 0.4.74).

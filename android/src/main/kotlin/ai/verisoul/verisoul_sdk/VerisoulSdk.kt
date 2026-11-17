@@ -9,6 +9,7 @@ import ai.verisoul.sdk.helpers.webview.VerisoulSessionCallback
 import ai.verisoul.verisoul_sdk.generated.FlutterError
 import ai.verisoul.verisoul_sdk.generated.VerisoulApiHostApi
 import android.content.Context
+import android.os.SystemClock
 import android.view.MotionEvent
 
 class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
@@ -25,12 +26,6 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
         0 to VerisoulEnvironment.Dev,
         1 to VerisoulEnvironment.Prod,
         2 to VerisoulEnvironment.Sandbox
-    )
-
-    private val actions: Map<Int, Int> = mapOf(
-        0 to MotionEvent.ACTION_DOWN,
-        1 to MotionEvent.ACTION_UP,
-        2 to MotionEvent.ACTION_MOVE,
     )
 
     override fun configure(enviroment: Long, projectId: String, customHostname: String?, callback: (Result<Unit>) -> Unit) {
@@ -75,15 +70,27 @@ class VerisoulSdk(val context: Context) : VerisoulApiHostApi {
 
     override fun onTouchEvent(x: Double, y: Double, motionType: Long) {
         try {
+            // The native SDK samples presses only, so other actions stop here.
+            val action = TouchMapping.motionActionFor(motionType.toInt())
+            if (action != MotionEvent.ACTION_DOWN) return
+
+            // MotionEvent times are on the uptime clock; the native SDK converts them to Unix time.
+            val now = SystemClock.uptimeMillis()
+            // Dart sends logical pixels; native Android touch events use physical pixels.
+            val density = context.resources.displayMetrics.density
             val motionEvent = MotionEvent.obtain(
-                System.currentTimeMillis(),
-                System.currentTimeMillis(),
-                actions[motionType.toInt()]!!,
-                x.toFloat(),
-                y.toFloat(),
+                now,
+                now,
+                action,
+                TouchMapping.toPhysicalPixels(x, density),
+                TouchMapping.toPhysicalPixels(y, density),
                 0
             )
-            Verisoul.onTouchEvent(motionEvent)
+            try {
+                Verisoul.onTouchEvent(motionEvent)
+            } finally {
+                motionEvent.recycle()
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()

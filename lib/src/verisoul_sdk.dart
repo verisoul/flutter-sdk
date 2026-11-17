@@ -75,8 +75,11 @@ class VerisoulSdk {
   ///
   /// This is used for gesture tracking or behavior analysis.
   ///
-  /// [x] and [y] specify the position of the touch event.
-  /// [action] defines the type of motion (e.g., down, move, up).
+  /// [x] and [y] specify the screen position of the touch event in logical
+  /// pixels. [action] defines the type of motion (e.g., down, move, up).
+  ///
+  /// On Android only [MotionAction.down] is recorded. Other actions are
+  /// accepted and ignored.
   static Future<void> touchEvent({
     required double x,
     required double y,

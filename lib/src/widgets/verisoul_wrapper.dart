@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:verisoul_sdk/verisoul_sdk.dart';
@@ -10,8 +8,8 @@ import 'package:verisoul_sdk/verisoul_sdk.dart';
 /// and forwarding them to the Verisoul SDK for behavioral analysis or
 /// fraud detection purposes.
 ///
-/// On Android, it uses a [Listener] to capture pointer events (down, move, up)
-/// and sends them to [VerisoulSdk.touchEvent].
+/// On Android, it uses a [Listener] to capture each pointer down event and
+/// sends its screen position to [VerisoulSdk.touchEvent].
 ///
 /// On Web and other platforms, it simply returns the [child] without modification.
 class VerisoulWrapper extends StatelessWidget {
@@ -29,28 +27,15 @@ class VerisoulWrapper extends StatelessWidget {
       return child;
     }
 
-    if (Platform.isAndroid) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      // The native SDK samples presses only, so moves and lifts stay in Dart.
       return Listener(
         behavior: HitTestBehavior.translucent, // Ensures gestures pass through
         onPointerDown: (event) {
           VerisoulSdk.touchEvent(
-            x: event.localPosition.dx,
-            y: event.localPosition.dy,
+            x: event.position.dx,
+            y: event.position.dy,
             action: MotionAction.down,
-          );
-        },
-        onPointerMove: (event) {
-          VerisoulSdk.touchEvent(
-            x: event.localPosition.dx,
-            y: event.localPosition.dy,
-            action: MotionAction.move,
-          );
-        },
-        onPointerUp: (event) {
-          VerisoulSdk.touchEvent(
-            x: event.localPosition.dx,
-            y: event.localPosition.dy,
-            action: MotionAction.up,
           );
         },
         child: child,
